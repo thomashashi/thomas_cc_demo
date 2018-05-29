@@ -1,0 +1,6 @@
+packer/binaries/*
+env.sh
+terraform.tf*
+
+# Include binaries folder
+!packer/binaries/.gitkeep
