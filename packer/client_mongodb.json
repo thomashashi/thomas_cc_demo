@@ -4,16 +4,16 @@
         "gcp_project_id": "{{ env `GCP_PROJECT_ID` }}",
         "gcp_zone": "{{ env `GCP_ZONE` }}",
         "dc_name": "{{ env `DC_NAME` }}",
-        "tag_name": "consul-server",
+        "tag_name": "consul-client-listing",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}",
+        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-mongodb",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image_family": "ubuntu-1804-lts",
+        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -23,20 +23,14 @@
     "provisioners": [
       {
         "type": "file",
-        "source": "files/install_{{ user `type` }}.sh",
-        "destination": "/tmp/install_{{ user `type` }}.sh"
-      },
-      {
-        "type": "file",
-        "source": "binaries/consul_1.2.0-beta1_linux_amd64.zip",
-        "destination": "/tmp/consul.zip"
+        "source": "files/install_mongodb.sh",
+        "destination": "/tmp/install_mongodb.sh"
       },
       {
         "type": "shell",
         "inline": [
-          "sleep 15",
-          "sudo chmod a+x /tmp/install_{{ user `type` }}.sh",
-          "sudo /tmp/install_{{ user `type` }}.sh {{ user `dc_name` }} {{ user `gcp_project_id` }} {{ user `tag_name` }}"
+          "sudo chmod a+x /tmp/install_mongodb.sh",
+          "sudo /tmp/install_mongodb.sh"
         ]
       }
     ]

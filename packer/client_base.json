@@ -34,7 +34,6 @@
       {
         "type": "shell",
         "inline": [
-          "sleep 15",
           "sudo chmod a+x /tmp/install_{{ user `type` }}.sh",
           "sudo /tmp/install_{{ user `type` }}.sh {{ user `dc_name` }} {{ user `gcp_project_id` }} {{ user `tag_name` }}"
         ]

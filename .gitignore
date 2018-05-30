@@ -4,3 +4,4 @@ terraform.tf*
 
 # Include binaries folder
 !packer/binaries/.gitkeep
+.terraform
