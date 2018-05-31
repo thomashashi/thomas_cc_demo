@@ -27,10 +27,18 @@
         "destination": "/tmp/install_mongodb.sh"
       },
       {
+        "type": "file",
+        "source": "services/mongodb.hcl",
+        "destination": "/tmp/mongodb.hcl"
+      },
+      {
         "type": "shell",
         "inline": [
           "sudo chmod a+x /tmp/install_mongodb.sh",
-          "sudo /tmp/install_mongodb.sh"
+          "sudo /tmp/install_mongodb.sh",
+          "sudo mv /tmp/mongodb.hcl /etc/consul/",
+          "sudo chown -R consul:consul /etc/consul",
+          "sudo systemctl enable consul"
         ]
       }
     ]

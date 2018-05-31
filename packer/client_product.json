@@ -27,10 +27,18 @@
         "destination": "/tmp/install_products.sh"
       },
       {
+        "type": "file",
+        "source": "services/product.hcl",
+        "destination": "/tmp/product.hcl"
+      },
+      {
         "type": "shell",
         "inline": [
           "sudo chmod a+x /tmp/install_products.sh",
-          "sudo /tmp/install_products.sh"
+          "sudo /tmp/install_products.sh",
+          "sudo mv /tmp/product.hcl /etc/consul/product.hcl",
+          "sudo chown -R consul:consul /etc/consul",
+          "sudo systemctl enable consul"
         ]
       }
     ]

@@ -10,24 +10,29 @@ REGION=$3
 echo "Building server image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
  GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=server \
- packer build -force server.json
+ packer build -force server.json &
 
 echo "Building client image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
  GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
- packer build -force client_base.json
+ packer build -force client_base.json &
 
 echo "Building node.js image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
   GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
-  packer build -force client_listing.json
+  packer build -force client_listing.json &
 
 echo "Building flask image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
   GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
-  packer build -force client_product.json
+  packer build -force client_product.json &
 
 echo "Building mongodb image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
   GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
-  packer build -force client_mongodb.json
+  packer build -force client_mongodb.json &
+
+echo 'Waiting for completion'
+wait
+
+echo 'Complete!'

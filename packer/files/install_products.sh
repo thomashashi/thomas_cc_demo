@@ -18,7 +18,7 @@ Documentation=https://example.com
 After=network.target
 
 [Service]
-Environment=DB_ADDR=localhost
+Environment=DB_ADDR=mongodb.service.consul
 Environment=DB_PORT=27017
 Environment=DB_USER=mongo
 Environment=DB_PW=mongo

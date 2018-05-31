@@ -18,7 +18,7 @@ sudo puppet apply -e "class { '::consul':
   install_method => 'url',
   download_url   => 'http://localhost:8888/consul.zip',
   service_ensure => 'stopped',
-  service_enable => true,
+  service_enable => false,
   version        => '1.0.2-beta',
   config_hash => {
     'client_addr'      => '0.0.0.0',

@@ -20,6 +20,8 @@ After=network.target
 
 [Service]
 Environment=LISTING_PORT=8000
+Environment=DB_URL=mongodb.service.consul
+Environment=DB_PORT=27017
 Type=simple
 User=ubuntu
 ExecStart=/usr/bin/node /home/ubuntu/src/server.js

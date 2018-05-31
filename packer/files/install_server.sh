@@ -10,8 +10,6 @@ sudo webfsd -r /tmp/ -p 8888
 
 sudo puppet module install KyleAnderson-consul
 
-echo "$MANIFEST"
-
 MANIFEST=$(cat <<EOF
 class { '::consul':
   pretty_config  => true,
@@ -42,7 +40,10 @@ class { '::consul':
       'disable_upgrade_migration' => false,
       'upgrade_version_tag'       => '',
     },
-    'node_meta' => { }
+    'node_meta' => { },
+    'connect' => {
+      'enabled' => true
+    }
   }
 }
 EOF
@@ -52,7 +53,5 @@ sudo puppet apply -e "$MANIFEST"
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get remove -qq puppet > /dev/null
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove -qq > /dev/null
-
-ls -l /opt/consul/
 
 echo "Finished!"

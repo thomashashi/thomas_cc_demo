@@ -27,10 +27,18 @@
         "destination": "/tmp/install_node.sh"
       },
       {
+        "type": "file",
+        "source": "services/listing.hcl",
+        "destination": "/tmp/listing.hcl"
+      },
+      {
         "type": "shell",
         "inline": [
           "sudo chmod a+x /tmp/install_node.sh",
-          "sudo /tmp/install_node.sh"
+          "sudo /tmp/install_node.sh",
+          "sudo mv /tmp/listing.hcl /etc/consul/listing.hcl",
+          "sudo chown -R consul:consul /etc/consul",
+          "sudo systemctl enable consul"
         ]
       }
     ]
