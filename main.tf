@@ -1,4 +1,4 @@
 provider "google" {
-  region = "us-east1"
+  region = "${var.region}"
   alias  = "east"
 }

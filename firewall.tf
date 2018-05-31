@@ -1,11 +1,11 @@
-resource "google_compute_firewall" "allow-consul-ui-east" {
+resource "google_compute_firewall" "allow-consul-east" {
   provider = "google.east"
   name     = "consul-ui-east"
   network  = "${data.google_compute_network.east-network.self_link}"
 
   allow {
     protocol = "tcp"
-    ports    = ["8302", "8500"]
+    ports    = ["8300","8301","8302", "8500"]
   }
 }
 
@@ -16,7 +16,7 @@ resource "google_compute_firewall" "allow-consul-wan-east" {
 
   allow {
     protocol = "udp"
-    ports    = ["8302"]
+    ports    = ["8301","8302"]
   }
 }
 

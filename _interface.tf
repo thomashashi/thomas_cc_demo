@@ -6,12 +6,18 @@ variable "ssh_key_data" {
 
 variable "ssh_user" {
   description = "Username of ssh user created with the ssh_key_data key"
+  default     = "ehron"
 }
 
 # Optional
 variable "server_machine_type" {
   description = "The machine type (size) to deploy"
   default     = "n1-standard-1"
+}
+
+variable "region" {
+  description = "Region into which to deploy"
+  default     = "us-east1"
 }
 
 variable "client_machine_type" {
