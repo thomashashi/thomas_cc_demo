@@ -35,13 +35,86 @@ resource "google_compute_instance" "mongodb_server" {
   allow_stopping_for_update = true
 }
 
+resource "google_compute_instance" "product_server" {
+  provider     = "google.east"
+  count        = "${var.client_product_count}"
+  name         = "client-east-product-${count.index + 1}"
+  machine_type = "${var.client_machine_type}"
+  zone         = "${data.google_compute_zones.east-azs.names[count.index]}"
+
+  boot_disk {
+    initialize_params {
+      image = "${data.google_compute_image.product_server.self_link}"
+    }
+  }
+
+  network_interface {
+    network = "${data.google_compute_network.east-network.self_link}"
+
+    access_config {
+      // ephemeral public IP
+    }
+  }
+
+  metadata {
+    sshKeys = "${var.ssh_user}:${var.ssh_key_data}"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  service_account {
+    scopes = ["https://www.googleapis.com/auth/compute.readonly"]
+  }
+
+  allow_stopping_for_update = true
+}
+
+resource "google_compute_instance" "listing_server" {
+  provider     = "google.east"
+  count        = "${var.client_listing_count}"
+  name         = "client-east-product-${count.index + 1}"
+  machine_type = "${var.client_machine_type}"
+  zone         = "${data.google_compute_zones.east-azs.names[count.index]}"
+
+  boot_disk {
+    initialize_params {
+      image = "${data.google_compute_image.listing_server.self_link}"
+    }
+  }
+
+  network_interface {
+    network = "${data.google_compute_network.east-network.self_link}"
+
+    access_config {
+      // ephemeral public IP
+    }
+  }
+
+  metadata {
+    sshKeys = "${var.ssh_user}:${var.ssh_key_data}"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  service_account {
+    scopes = ["https://www.googleapis.com/auth/compute.readonly"]
+  }
+
+  allow_stopping_for_update = true
+}
+
+/*
 # products servers
 resource "google_compute_region_instance_group_manager" "product-servers" {
   name = "product-servers-igm"
 
   base_instance_name = "product"
   instance_template  = "${google_compute_instance_template.product-server-instance.self_link}"
-  region             = "us-central1"
+  region             = "${var.region}"
 
   target_size = "${var.product_servers_count}"
 }
@@ -85,7 +158,7 @@ resource "google_compute_region_instance_group_manager" "listing-servers" {
 
   base_instance_name = "listing"
   instance_template  = "${google_compute_instance_template.listing_server_instance.self_link}"
-  region             = "us-central1"
+  region             = "${var.region}"
   target_size        = "${var.listing_servers_count}"
 }
 
@@ -121,3 +194,5 @@ resource "google_compute_instance_template" "listing_server_instance" {
     scopes = ["https://www.googleapis.com/auth/compute.readonly"]
   }
 }
+*/
+

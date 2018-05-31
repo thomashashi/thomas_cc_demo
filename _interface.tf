@@ -35,12 +35,12 @@ variable "client_db_count" {
   default     = "1"
 }
 
-variable "product_servers_count" {
+variable "client_product_count" {
   description = "The number of product machines to create in each region"
   default     = "2"
 }
 
-variable "listing_servers_count" {
+variable "client_listing_count" {
   description = "The number of listing machines to create in each region"
   default     = "2"
 }
