@@ -24,7 +24,7 @@ Environment=DB_URL=mongodb.service.consul
 Environment=DB_PORT=27017
 Type=simple
 User=ubuntu
-ExecStart=/usr/bin/node /home/ubuntu/src/server.js
+ExecStart=/usr/bin/node /home/ubuntu/src/listing-service/server.js
 Restart=on-failure
 
 [Install]

@@ -2,7 +2,7 @@
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq > /dev/null
 sudo DEBIAN_FRONTEND=noninteractive apt-get -qq upgrade > /dev/null
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq puppet unzip wget jq webfs > /dev/null
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq puppet unzip wget jq webfs pip3 > /dev/null
 
 sudo puppet module install KyleAnderson-consul
 sudo puppet module install reppard-envconsul

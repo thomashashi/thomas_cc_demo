@@ -1,8 +1,8 @@
 #! /bin/bash
 
 # install the requirements
-pip install flask
-pip install pymongo
+pip3 install flask
+pip3 install pymongo
 
 # download the apply
 mkdir /home/ubuntu/src
@@ -26,7 +26,7 @@ Environment=DB_NAME=bbthe90s
 Environment=COL_NAME=products
 Type=simple
 User=ubuntu
-ExecStart=/usr/bin/python /home/ubuntu/src/product.py
+ExecStart=/usr/bin/python3 /home/ubuntu/src/product-service/product.py
 Restart=on-failure
 
 [Install]
