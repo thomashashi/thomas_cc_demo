@@ -12,7 +12,7 @@ data "google_compute_image" "east-server" {
 }
 
 data "google_compute_image" "mongodb_server" {
-  name = "east-gcp-ubuntu-consul-client"
+  name = "east-gcp-ubuntu-consul-client-mongodb"
 }
 
 data "google_compute_image" "listing_server" {
@@ -21,4 +21,8 @@ data "google_compute_image" "listing_server" {
 
 data "google_compute_image" "product_server" {
   name = "east-gcp-ubuntu-consul-client-product"
+}
+
+data "google_compute_image" "webclient_server" {
+  name = "east-gcp-ubuntu-consul-client-webclient"
 }

@@ -74,13 +74,49 @@ resource "google_compute_instance" "product_server" {
 resource "google_compute_instance" "listing_server" {
   provider     = "google.east"
   count        = "${var.client_listing_count}"
-  name         = "client-east-product-${count.index + 1}"
+  name         = "client-east-listing-${count.index + 1}"
   machine_type = "${var.client_machine_type}"
   zone         = "${data.google_compute_zones.east-azs.names[count.index]}"
 
   boot_disk {
     initialize_params {
       image = "${data.google_compute_image.listing_server.self_link}"
+    }
+  }
+
+  network_interface {
+    network = "${data.google_compute_network.east-network.self_link}"
+
+    access_config {
+      // ephemeral public IP
+    }
+  }
+
+  metadata {
+    sshKeys = "${var.ssh_user}:${var.ssh_key_data}"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  service_account {
+    scopes = ["https://www.googleapis.com/auth/compute.readonly"]
+  }
+
+  allow_stopping_for_update = true
+}
+
+resource "google_compute_instance" "index_server" {
+  provider     = "google.east"
+  count        = "${var.client_index_count}"
+  name         = "client-east-index-${count.index + 1}"
+  machine_type = "${var.client_machine_type}"
+  zone         = "${data.google_compute_zones.east-azs.names[count.index]}"
+
+  boot_disk {
+    initialize_params {
+      image = "${data.google_compute_image.webclient_server.self_link}"
     }
   }
 

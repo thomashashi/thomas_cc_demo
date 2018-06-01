@@ -32,6 +32,11 @@ GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
   GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
   packer build -force client_mongodb.json &
 
+echo "Building web client image..."
+GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
+  GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
+  packer build -force client_webclient.json &
+
 echo 'Waiting for completion'
 wait
 

@@ -45,6 +45,11 @@ variable "client_listing_count" {
   default     = "2"
 }
 
+variable "client_index_count" {
+  description = "The number of listing machines to create in each region"
+  default     = "1"
+}
+
 output "server_ips" {
   value = ["${google_compute_instance.servers-east.*.network_interface.0.access_config.0.assigned_nat_ip}"]
 }
