@@ -53,3 +53,7 @@ variable "client_index_count" {
 output "server_ips" {
   value = ["${google_compute_instance.servers-east.*.network_interface.0.access_config.0.assigned_nat_ip}"]
 }
+
+output "web_client_ips" {
+  value = ["${google_compute_instance.index_server.*.network_interface.0.access_config.0.assigned_nat_ip}"]
+}

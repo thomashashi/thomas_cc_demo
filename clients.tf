@@ -69,6 +69,7 @@ resource "google_compute_instance" "product_server" {
   }
 
   allow_stopping_for_update = true
+  depends_on                = ["google_compute_instance.mongodb_server"]
 }
 
 resource "google_compute_instance" "listing_server" {
@@ -105,6 +106,7 @@ resource "google_compute_instance" "listing_server" {
   }
 
   allow_stopping_for_update = true
+  depends_on                = ["google_compute_instance.mongodb_server"]
 }
 
 resource "google_compute_instance" "index_server" {
