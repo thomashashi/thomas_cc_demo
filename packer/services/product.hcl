@@ -29,7 +29,7 @@ service {
         upstreams = [
           {
             destination_name = "mongodb",
-            local_bind_port = 5000
+            local_bind_port = 5001
           }
         ]
       }
