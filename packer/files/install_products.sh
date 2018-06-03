@@ -14,12 +14,11 @@ git clone https://github.com/norhe/product-service.git
 cat <<EOF | sudo tee /lib/systemd/system/product.service
 [Unit]
 Description=product.py - Listing service API
-Documentation=https://example.com
 After=network.target
 
 [Service]
-Environment=DB_ADDR=mongodb.service.consul
-Environment=DB_PORT=27017
+Environment=DB_ADDR=localhost
+Environment=DB_PORT=5001
 Environment=DB_USER=mongo
 Environment=DB_PW=mongo
 Environment=DB_NAME=bbthe90s
