@@ -15,7 +15,10 @@ GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
 echo "Building client image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
  GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
- packer build -force client_base.json &
+ packer build -force client_base.json & 
+
+echo "Waiting on base client image..."
+wait
 
 echo "Building node.js image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
