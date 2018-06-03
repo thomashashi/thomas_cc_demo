@@ -27,6 +27,6 @@ resource "google_compute_firewall" "allow-services-east" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "443"]
+    ports    = ["80", "443", "8080"]
   }
 }
