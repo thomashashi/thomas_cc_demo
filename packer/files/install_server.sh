@@ -51,6 +51,9 @@ EOF
 
 sudo puppet apply -e "$MANIFEST"
 
+echo "Use the new UI"
+echo "CONSUL_UI_BETA=true" | sudo tee -a /etc/environment
+
 sudo DEBIAN_FRONTEND=noninteractive apt-get remove -qq puppet > /dev/null
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove -qq > /dev/null
 

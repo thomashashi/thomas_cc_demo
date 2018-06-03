@@ -2,7 +2,7 @@
 
 sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq > /dev/null
 sudo DEBIAN_FRONTEND=noninteractive apt-get -qq upgrade > /dev/null
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq puppet unzip wget jq webfs pip3 > /dev/null
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq puppet unzip wget jq webfs python3-pip > /dev/null
 
 sudo puppet module install KyleAnderson-consul
 sudo puppet module install reppard-envconsul
@@ -39,6 +39,6 @@ class { 'envconsul':
 include consul_template
 "
 
-sudo DEBIAN_FRONTEND=noninteractive apt-get remove -qq puppet > /dev/null
+sudo DEBIAN_FRONTEND=noninteractive apt-get remove -qq puppet webfs > /dev/null
 sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove -qq > /dev/null
 echo "Finished!"

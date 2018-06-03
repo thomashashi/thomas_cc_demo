@@ -21,11 +21,11 @@ After=network.target
 [Service]
 Environment=LISTING_PORT=8000
 Environment=DB_URL=mongodb.service.consul
-Environment=DB_PORT=27017
+Environment=DB_PORT=8001
 Type=simple
 User=ubuntu
 ExecStart=/usr/bin/node /home/ubuntu/src/listing-service/server.js
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=multi-user.target

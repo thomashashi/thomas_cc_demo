@@ -11,21 +11,20 @@ git clone https://github.com/norhe/simple-client.git
 
 # systemd
 
-cat <<EOF | sudo tee /lib/systemd/system/client.service
+cat <<EOF | sudo tee /lib/systemd/system/web_client.service
 [Unit]
 Description=client.py - Client service API
-Documentation=https://example.com
 After=network.target
 
 [Service]
 Type=simple
 User=ubuntu
 ExecStart=/usr/bin/python3 /home/ubuntu/src/simple-client/client.py
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
 sudo systemctl daemon-reload
-sudo systemctl enable client.service
+sudo systemctl enable web_client.service

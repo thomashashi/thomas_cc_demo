@@ -26,7 +26,7 @@ Environment=COL_NAME=products
 Type=simple
 User=ubuntu
 ExecStart=/usr/bin/python3 /home/ubuntu/src/product-service/product.py
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
