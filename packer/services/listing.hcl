@@ -18,7 +18,7 @@ service {
       interval = "10s"
       timeout = "1s"
       name = "Listing server /healthz"
-      http =  "http://localhost:8000/healthz",
+      http =  "http://localhost:8000/listing/healthz",
       tls_skip_verify = true,
     }
   ]
