@@ -28,14 +28,20 @@
       },
       {
         "type": "file",
-        "source": "binaries/consul_1.2.0-beta1_linux_amd64.zip",
+        "source": "binaries/consul_1.2.0-beta2_linux_amd64.zip",
         "destination": "/tmp/consul.zip"
+      },
+      {
+        "type": "file",
+        "source": "files/encrypt.hcl",
+        "destination": "/tmp/encrypt.hcl"
       },
       {
         "type": "shell",
         "inline": [
           "sudo chmod a+x /tmp/install_{{ user `type` }}.sh",
-          "sudo /tmp/install_{{ user `type` }}.sh {{ user `dc_name` }} {{ user `gcp_project_id` }} {{ user `tag_name` }}"
+          "sudo /tmp/install_{{ user `type` }}.sh {{ user `dc_name` }} {{ user `gcp_project_id` }} {{ user `tag_name` }}",
+          "sudo mv /tmp/encrypt.hcl /etc/consul/encrypt.hcl"
         ]
       }
     ]

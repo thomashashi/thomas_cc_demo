@@ -1,4 +1,5 @@
 packer/binaries/*
+packer/files/encrypt.hcl
 env.sh
 terraform.tf*
 
