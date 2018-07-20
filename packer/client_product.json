@@ -13,7 +13,7 @@
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}",
+        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-client",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -38,7 +38,8 @@
           "sudo /tmp/install_products.sh",
           "sudo mv /tmp/product.hcl /etc/consul/product.hcl",
           "sudo chown -R consul:consul /etc/consul",
-          "sudo systemctl enable consul"
+          "sudo systemctl enable consul",
+          "sudo systemctl enable consul_enable_acl.service"
         ]
       }
     ]

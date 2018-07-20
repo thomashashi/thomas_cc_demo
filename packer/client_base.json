@@ -9,11 +9,11 @@
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}",
+        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-client",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image_family": "ubuntu-1804-lts",
+        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-base",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -23,25 +23,14 @@
     "provisioners": [
       {
         "type": "file",
-        "source": "files/install_{{ user `type` }}.sh",
-        "destination": "/tmp/install_{{ user `type` }}.sh"
-      },
-      {
-        "type": "file",
-        "source": "binaries/consul_1.2.0-beta2_linux_amd64.zip",
-        "destination": "/tmp/consul.zip"
-      },
-      {
-        "type": "file",
-        "source": "files/encrypt.hcl",
-        "destination": "/tmp/encrypt.hcl"
+        "source": "files/client.hcl",
+        "destination": "/tmp/client.hcl"
       },
       {
         "type": "shell",
         "inline": [
-          "sudo chmod a+x /tmp/install_{{ user `type` }}.sh",
-          "sudo /tmp/install_{{ user `type` }}.sh {{ user `dc_name` }} {{ user `gcp_project_id` }} {{ user `tag_name` }}",
-          "sudo mv /tmp/encrypt.hcl /etc/consul/encrypt.hcl"
+          "sudo mv /tmp/client.hcl /etc/consul/client.hcl",
+          "sudo rm -rf /opt/consul/*"
         ]
       }
     ]

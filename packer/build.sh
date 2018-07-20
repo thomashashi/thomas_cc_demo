@@ -10,7 +10,7 @@ REGION=$3
 # we will use Consul to generate the gossip key.  This has to be shared across datacenters.
 echo "Creating gossip encryption key..."
 if ! [ -x "$(command -v consul)" ]; then
-  echo 'Error: flappy is not installed.' >&2
+  echo 'Error: consul is not installed.' >&2
   exit 1
 fi
 
@@ -23,6 +23,15 @@ fi
 
 echo "encrypt = \"$(consul keygen)\"" > ./files/encrypt.hcl
 
+echo "Building base image..."
+GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
+ GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=server \
+ packer build -force consul_base.json &
+
+
+echo "Waiting on base client image..."
+wait
+
 echo "Building server image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
  GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=server \
@@ -33,8 +42,13 @@ GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
  GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
  packer build -force client_base.json & 
 
-echo "Waiting on base client image..."
+echo "Waiting on server and client bases..."
 wait
+
+echo "Building Vault server image..."
+GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
+  GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
+  packer build -force vault_server.json &
 
 echo "Building node.js image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \

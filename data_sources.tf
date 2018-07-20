@@ -11,6 +11,10 @@ data "google_compute_image" "east-server" {
   name = "east-gcp-ubuntu-consul-server"
 }
 
+data "google_compute_image" "east-vault-server" {
+  name = "east-gcp-ubuntu-consul-client-vault-server"
+}
+
 data "google_compute_image" "mongodb_server" {
   name = "east-gcp-ubuntu-consul-client-mongodb"
 }

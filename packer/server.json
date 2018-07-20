@@ -13,7 +13,7 @@
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image_family": "ubuntu-1804-lts",
+        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-base",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -23,26 +23,23 @@
     "provisioners": [
       {
         "type": "file",
-        "source": "files/install_{{ user `type` }}.sh",
-        "destination": "/tmp/install_{{ user `type` }}.sh"
+        "source": "files/vault_ca.hcl",
+        "destination": "/tmp/vault_ca.hcl"
       },
       {
         "type": "file",
-        "source": "binaries/consul_1.2.0-beta2_linux_amd64.zip",
-        "destination": "/tmp/consul.zip"
-      },
-      {
-        "type": "file",
-        "source": "files/encrypt.hcl",
-        "destination": "/tmp/encrypt.hcl"
+        "source": "files/server.hcl",
+        "destination": "/tmp/server.hcl"
       },
       {
         "type": "shell",
         "inline": [
           "sleep 15",
-          "sudo chmod a+x /tmp/install_{{ user `type` }}.sh",
-          "sudo /tmp/install_{{ user `type` }}.sh {{ user `dc_name` }} {{ user `gcp_project_id` }} {{ user `tag_name` }}",
-          "sudo mv /tmp/encrypt.hcl /etc/consul/encrypt.hcl"
+          "sudo mv /tmp/vault_ca.hcl /etc/consul/vault_ca.hcl",
+          "sudo mv /tmp/server.hcl /etc/consul/server.hcl",
+          "sudo systemctl enable consul.service",
+          "sudo systemctl enable consul_enable_acl.service",
+          "sudo rm -rf /opt/consul/*"
         ]
       }
     ]

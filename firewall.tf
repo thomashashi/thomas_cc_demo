@@ -5,7 +5,7 @@ resource "google_compute_firewall" "allow-consul-east" {
 
   allow {
     protocol = "tcp"
-    ports    = ["8300", "8301", "8302", "8500"]
+    ports    = ["8200", "8300", "8301", "8302", "8500"]
   }
 }
 
@@ -27,6 +27,6 @@ resource "google_compute_firewall" "allow-services-east" {
 
   allow {
     protocol = "tcp"
-    ports    = ["80", "443", "8080"]
+    ports    = ["22", "80", "443", "8080"]
   }
 }
