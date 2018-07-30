@@ -5,55 +5,11 @@ sleep 30
 
 echo "Creating payload"
 cat >./pload <<EOF
-#{
-#  "Name": "$HOSTNAME Agent Token",
-#  "Type": "client",
-#  "Rules": "node \"\" { policy = \"write\" } service \"\" { policy = \"write\" }" 
-#}
-#EOF
-
-cat >./pload <<EOF
 {
   "Name": "$HOSTNAME Agent Token",
   "Type": "client",
-  "Rules": "{
-              \"key\": {
-                "": {
-                  \"policy\": \"write\"
-                }
-              },
-              \"node\": {
-                \"\": {
-                  \"policy\": \"write\"
-                }
-              },
-              \"service\": {
-                \"\": {
-                  \"policy\": \"write\"
-                }
-              },
-              \"agent\": {
-                \"\": {
-                  \"policy\": \"write\"
-                }
-
-              },
-              \"session\": {
-                \"\": {
-                  \"policy\": \"write\"
-                }
-              },
-              \"event\": {
-                \"\": {
-                  \"policy\" : \"write\"
-                }
-              },
-              \"query\": {
-                \"\": {
-                  \"policy\" : \"write\"
-                }
-              }
-            }" 
+  "Rules": "node \"\" { policy = \"write\" } service \"\" { policy = \"write\" } key \"\"  { policy = \"read\" } "
+}
 EOF
 
 echo "Creating token..."
