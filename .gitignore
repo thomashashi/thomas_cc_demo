@@ -1,8 +1,8 @@
 packer/binaries/*
 packer/files/encrypt.hcl
 env.sh
-terraform.tf*
+terraform/gcp/terraform.tf*
 
 # Include binaries folder
 !packer/binaries/.gitkeep
-.terraform
+terraform/gcp/.terraform
