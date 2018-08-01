@@ -7,7 +7,7 @@
 	"aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
 	"aws_region": "{{ env `AWS_REGION` }}",
         "dc_name": "{{ env `DC_NAME` }}",
-        "tag_name": "consul-server",
+        "role": "consul-base",
         "type": "{{ env `NODE_TYPE` }}",
 	"consul_version": "1.2.2"
     },
@@ -21,7 +21,7 @@
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
-        "tags": ["{{ user `tag_name` }}"]
+        "tags": ["{{ user `role` }}"]
       },
       {
 	"type": "amazon-ebs",
@@ -46,7 +46,8 @@
             "project": "CC Demo SE East Quarterly Training",
             "Base_AMI_Name": "{{ .SourceAMIName }}",
             "Base_AMI": "{{ .SourceAMI }}",
-            "consul_version": "{{ user `consul_version` }}"
+            "consul_version": "{{ user `consul_version` }}",
+	    "role": "{{ user `role` }}"
         }
       }
     ],
