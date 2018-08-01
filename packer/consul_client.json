@@ -71,7 +71,7 @@
 	    "type": "shell",
 	    "inline": [
 		"sudo mv /tmp/client.hcl /etc/consul/client.hcl",
-		"sudo mv /tmp/client-join.hcl /etc/consul-client-join.hcl",
+		"sudo mv /tmp/client-join.hcl /etc/consul/client-join.hcl",
 		"sudo rm -f /tmp/client*.hcl",
 		"sudo rm -rf /opt/consul/*"
 	    ]
