@@ -8,7 +8,14 @@ cat >./pload <<EOF
 {
   "Name": "$HOSTNAME Agent Token",
   "Type": "client",
-  "Rules": "node \"\" { policy = \"write\" } service \"\" { policy = \"write\" } key \"\"  { policy = \"read\" } "
+  "Rules": "node \"\" 
+      { policy = \"write\" } 
+    service \"\" 
+      { policy = \"write\" } 
+    key \"\"  
+      { policy = \"read\" }
+    key \"vault\"  
+      { policy = \"deny\" }"
 }
 EOF
 

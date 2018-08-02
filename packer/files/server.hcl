@@ -9,7 +9,7 @@ non_voting_server  = false
 acl_datacenter     = "east"
 acl_master_token   = "abc123"
 acl_down_policy    = "extend-cache"
-acl_default_policy = "allow"
+acl_default_policy = "deny"
 
 retry_join        = [
     "provider=gce project_name=connect-env tag_value=consul-server"
