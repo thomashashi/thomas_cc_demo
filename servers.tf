@@ -45,6 +45,11 @@ resource "google_compute_instance" "servers-east-vault" {
   machine_type = "${var.server_machine_type}"
   zone         = "${data.google_compute_zones.east-azs.names[count.index]}"
 
+  depends_on = [
+    "google_kms_crypto_key.vault-key", 
+    "google_compute_instance.servers-east"
+  ]
+
   tags = [
     "vault-server",
   ]

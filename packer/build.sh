@@ -45,12 +45,14 @@ GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
 echo "Waiting on server and client bases..."
 wait
 
+
 echo "Building Vault server image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
   GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
   packer build -force vault_server.json &
 
-echo "Building node.js image..."
+
+echo "Building listing.js image..."
 GCP_ACCOUNT_FILE_JSON=$CREDS GCP_PROJECT_ID=$PROJ \
   GCP_ZONE=$REGION DC_NAME=east NODE_TYPE=client \
   packer build -force client_listing.json &
