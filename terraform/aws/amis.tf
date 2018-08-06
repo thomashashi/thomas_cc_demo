@@ -27,3 +27,18 @@ data "aws_ami" "mongo" {
         values = ["thomas@hashicorp.com"]
     }
 }
+
+data "aws_ami" "product-api" {
+    most_recent = true
+    owners      = ["753646501470"] # hc-sc-demos-2018
+
+    filter {
+        name   = "name"
+        values = ["east-aws-ubuntu-product-*"]
+    }
+
+    filter {
+        name   = "tag:owner"
+        values = ["thomas@hashicorp.com"]
+    }
+}
