@@ -81,6 +81,70 @@ resource "aws_iam_role_policy" "describe_instances" {
 EOF
 }
 
+# Allow Consul clients also to call ec2:DescribeTags for Cloud AutoJoin
+
+resource "aws_iam_instance_profile" "consul_client_iam_profile" {
+    name = "${var.project_name}-consul_client_profile"
+    role = "${aws_iam_role.consul_client_iam_role.name}"
+}
+
+resource "aws_iam_role" "consul_client_iam_role" {
+    name        = "${var.project_name}-consul_client_role"
+    description = "CC Demo Consul Client IAM Role"
+
+    assume_role_policy = <<EOF
+{ 
+  "Version": "2012-10-17",
+  "Statement": [
+    { 
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "client_describe_tags" {
+    name        = "${var.project_name}-client-policy-desc"
+    role        = "${aws_iam_role.consul_client_iam_role.id}"
+
+    policy = <<EOF
+{   
+    "Version": "2012-10-17",
+    "Statement": {
+        "Effect": "Allow",
+        "Action": [
+            "ec2:DescribeTags"
+        ],
+        "Resource": "*"
+    }
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "client_describe_instances" {
+    name = "${var.project_name}-client-policy-desc-instances"
+    role = "${aws_iam_role.consul_client_iam_role.id}"
+
+    policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": {
+	"Effect": "Allow",
+	"Action": [
+	    "ec2:DescribeInstances"
+	],
+	"Resource": "*"
+    }
+}
+EOF
+}
+
 # Security groups
 
 resource aws_security_group "consul_server_sg" {
