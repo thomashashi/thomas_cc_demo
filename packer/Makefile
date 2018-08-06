@@ -5,7 +5,7 @@ DEFAULT:
 	@echo Run 'make gcp' or 'make aws' to build appropriate images
 	@echo Set the environment variable DC_NAME to name the images
 
-aws: aws_consul_server aws_vault_server aws_client_listing aws_client_mongodb aws_client_product
+aws: aws_consul_server aws_vault_server aws_client_listing aws_client_mongodb aws_client_product aws_client_webclient
 
 aws_consul_base: .built.aws_consul_base
 
@@ -20,6 +20,8 @@ aws_client_listing: aws_consul_client .built.aws_client_listing
 aws_client_mongodb: aws_consul_client .built.aws_client_mongodb
 
 aws_client_product: aws_consul_client .built.aws_client_product
+
+aws_client_webclient: aws_consul_client .built.aws_client_webclient
 
 .built.aws_consul_base: consul_base.json files/install_base.sh files/install_consul.sh
 	DC_NAME=east packer build -only amazon-ebs consul_base.json
@@ -48,6 +50,10 @@ aws_client_product: aws_consul_client .built.aws_client_product
 .built.aws_client_product: client_product.json files/install_products.sh services/product.hcl
 	DC_NAME=east packer build -only amazon-ebs client_product.json
 	touch .built.aws_client_product
+
+.built.aws_client_webclient: client_webclient.json files/install_webclient.sh services/web_client.hcl
+	DC_NAME=east packer build -only amazon-ebs client_webclient.json
+	touch .built.aws_client_webclient
 
 $(ENCRYPT_CONFIG):
 	$(if $(shell PATH=$(PATH) which consul),,$(error "No consul in PATH"))
