@@ -54,7 +54,7 @@ variable "client_listing_count" {
   default     = "2"
 }
 
-variable "client_index_count" {
-  description = "The number of listing machines to create in each region"
-  default     = "1"
+variable "client_webclient_count" {
+    description = "The number of webclients to create in each region"
+    default     = "2"
 }
