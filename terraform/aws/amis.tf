@@ -49,7 +49,7 @@ data "aws_ami" "listing-api" {
 
     filter {
         name   = "name"
-        values = ["east-aws-ubuntu-listing-*"]
+        values = ["east-aws-ubuntu-listing-server-*"]
     }
 
     filter {
