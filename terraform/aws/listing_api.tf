@@ -10,7 +10,7 @@ resource aws_instance "listing-api" {
     vpc_security_group_ids      = ["${aws_security_group.listing_server_sg.id}"]
     iam_instance_profile        = "${aws_iam_instance_profile.consul_client_iam_profile.name}"
     
-    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-listing-api-server-${count.index}"), map("role", "listing-api-server"))}"
+    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-listing-api-server-${count.index}"), map("role", "listing-api-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")))}"
 }
 
 output "listing_api_servers" {
