@@ -62,6 +62,24 @@
 	    "source": "files/install_consul.sh",
 	    "destination": "/tmp/install_consul.sh"
 	},
+        {   
+            "type": "file",
+            "destination": "/tmp/auto-join.hcl",
+            "source": "files/auto-join-gcp.hcl",
+            "only": ["googlecompute"]
+        },
+        {   
+            "type": "file",
+            "destination": "/tmp/auto-join.hcl.tmpl",
+            "source": "files/auto-join-aws.hcl.tmpl",
+            "only": ["amazon-ebs"]
+        },
+	{
+            "type": "file",
+            "destination": "/tmp/update-consul-join-config",
+            "source": "files/update-consul-join-config",
+            "only": ["amazon-ebs"]
+        },
 	{
 	    "type": "shell",
 	    "inline": [
@@ -77,6 +95,45 @@
 		"sudo chmod a+x /tmp/install_consul.sh",
 		"sudo /tmp/install_consul.sh",
 		"sudo rm -f /tmp/install_consul.sh"
+	    ]
+	},
+	{
+	    "type": "shell",
+	    "override": {
+		"googlecompute": {
+		    "inline": [
+			"sudo install -o consul -g consul -m 444 /tmp/auto-join.hcl /etc/consul",
+			"sudo rm -f /tmp/auto-join.hcl"
+		    ]
+		},
+		"amazon-ebs": {
+		    "inline": [
+			"sudo install -o consul -g consul -m 444 /tmp/auto-join.hcl.tmpl /etc/consul",
+			"sudo install -o root -g root -m 555 /tmp/update-consul-join-config /usr/local/bin",
+			"sudo rm -f /tmp/auto-join.hcl.tmpl /tmp/update-consul-join-config"
+		    ]
+		}
+	    }
+	},
+	{
+	    "type": "file",
+	    "destination": "/tmp/consul.service",
+	    "override": {
+		"googlecompute": {
+		    "source": "files/consul.service.gcp"
+		},
+		"amazon-ebs": {
+		    "source": "files/consul.service.aws"
+		}
+	    }
+	},
+	{
+	    "type": "shell",
+	    "inline": [
+		"sudo install -o root -g root -m 444 /tmp/consul.service /lib/systemd/system/consul.service",
+		"sudo rm -f /tmp/consul.service",
+		"sudo systemctl daemon-reload",
+		"sudo systemctl disable consul.service"
 	    ]
 	}
     ]
