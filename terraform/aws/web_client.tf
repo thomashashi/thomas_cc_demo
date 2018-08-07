@@ -17,10 +17,88 @@ output "webclient_servers" {
     value = ["${aws_instance.webclient.*.public_dns}"]
 }
 
-# Security groups
+resource "aws_lb" "webclient-lb" {
+    name               = "${var.project_name}-lb"
+    internal           = false
+    load_balancer_type = "application"
+    subnets            = ["${data.aws_subnet_ids.default.ids}"]
+    security_groups    = ["${aws_security_group.lb_sg.id}"]
+
+    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-lb"))}"
+}
+
+resource "aws_lb_target_group" "webclient" {
+    name     = "${var.project_name}-lb-tg"
+    port     = 8080
+    protocol = "HTTP"
+    vpc_id   = "${data.aws_vpc.default.id}"
+
+    stickiness = {
+	type    = "lb_cookie"
+	enabled = false
+    }
+}
+
+resource "aws_lb_target_group_attachment" "webclient" {
+    count            = "${var.client_webclient_count}"
+    target_group_arn = "${aws_lb_target_group.webclient.arn}"
+    target_id        = "${element(aws_instance.webclient.*.id, count.index)}"
+
+}
+
+resource "aws_lb_listener" "webclient-lb" {
+    load_balancer_arn = "${aws_lb.webclient-lb.arn}"
+    port              = 80
+    protocol          = "HTTP"
+
+    default_action = {
+	target_group_arn = "${aws_lb_target_group.webclient.arn}"
+	type             = "forward"
+    }
+}
+
+output "webclient-lb" {
+    value = "${aws_lb.webclient-lb.dns_name}"
+}
+
+# Security groups for LB
+
+resource aws_security_group "lb_sg" {
+    description = "Traffic allowed to Webclient LB"
+    tags        = "${var.hashi_tags}"
+}
+
+resource aws_security_group_rule "lb_80_from_world" {
+    security_group_id = "${aws_security_group.lb_sg.id}"
+    type              = "ingress"
+    protocol          = "tcp"
+    from_port         = 80
+    to_port           = 80
+    cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource aws_security_group_rule "lb_everything_in_internal" {
+    security_group_id = "${aws_security_group.lb_sg.id}"
+    type              = "ingress"
+    protocol          = "all"
+    from_port         = 0
+    to_port           = 65535
+    cidr_blocks       = ["${data.aws_vpc.default.cidr_block}"]
+}
+
+resource aws_security_group_rule "lb_everything_out" {
+    security_group_id = "${aws_security_group.lb_sg.id}"
+    type              = "egress"
+    protocol          = "all"
+    from_port         = 0
+    to_port           = 65535
+    cidr_blocks       = ["0.0.0.0/0"]
+}
+
+# Security groups for EC2 Instances
 
 resource aws_security_group "webclient_sg" {
-    description = "Traffic allowed to Product API servers"
+    description = "Traffic allowed to Webclient servers"
     tags        = "${var.hashi_tags}"
 }
 
