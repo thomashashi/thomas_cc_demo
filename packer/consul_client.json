@@ -57,13 +57,13 @@
 	},
 	{
 	    "type": "file",
-	    "destination": "/tmp/client-join.hcl",
+	    "destination": "/tmp/auto-join.hcl",
 	    "override": {
 		"googlecompute": {
-		    "source": "files/client-join-gcp.hcl"
+		    "source": "files/auto-join-gcp.hcl"
 	    },
 		"amazon-ebs": {
-		    "source": "files/client-join-aws.hcl"
+		    "source": "files/auto-join-aws.hcl"
 		}
 	    }
 	},
@@ -71,8 +71,8 @@
 	    "type": "shell",
 	    "inline": [
 		"sudo mv /tmp/client.hcl /etc/consul/client.hcl",
-		"sudo mv /tmp/client-join.hcl /etc/consul/client-join.hcl",
-		"sudo rm -f /tmp/client*.hcl",
+		"sudo mv /tmp/auto-join.hcl /etc/consul/auto-join.hcl",
+		"sudo rm -f /tmp/*.hcl",
 		"sudo rm -rf /opt/consul/*"
 	    ]
 	}

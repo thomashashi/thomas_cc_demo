@@ -27,11 +27,11 @@ aws_client_webclient: aws_consul_client .built.aws_client_webclient
 	DC_NAME=east packer build -only amazon-ebs consul_base.json
 	touch .built.aws_consul_base
 
-.built.aws_consul_client: consul_client.json files/client-join-aws.hcl files/client.hcl
+.built.aws_consul_client: consul_client.json files/auto-join-aws.hcl files/client.hcl
 	DC_NAME=east packer build -only amazon-ebs consul_client.json
 	touch .built.aws_consul_client
 
-.built.aws_consul_server: consul_server.json files/server.hcl files/server-join-aws.hcl
+.built.aws_consul_server: consul_server.json files/server.hcl
 	DC_NAME=east packer build -only amazon-ebs consul_server.json
 	touch .built.aws_consul_server
 

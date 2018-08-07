@@ -62,13 +62,13 @@
       },
       {
 	"type": "file",
-	"destination": "/tmp/server-join.hcl",
+	"destination": "/tmp/auto-join.hcl",
 	"override": {
 	  "googlecompute": {
-	    "source": "files/server-join-gcp.hcl"
+	    "source": "files/auto-join-gcp.hcl"
 	  },
 	  "amazon-ebs": {
-	    "source": "files/server-join-aws.hcl"
+	    "source": "files/auto-join-aws.hcl"
 	  }
 	}
       },
@@ -79,7 +79,7 @@
 	  "sudo rm -f /etc/consul/client*",
           "sudo mv /tmp/vault_ca.hcl /etc/consul/vault_ca.hcl",
           "sudo mv /tmp/server.hcl /etc/consul/server.hcl",
-	  "sudo mv /tmp/server-join.hcl /etc/consul/server-join.hcl",
+	  "sudo mv /tmp/auto-join.hcl /etc/consul/auto-join.hcl",
           "sudo systemctl enable consul.service",
           "sudo systemctl enable consul_enable_acl.service",
           "sudo rm -rf /opt/consul/*"
