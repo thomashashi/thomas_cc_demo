@@ -110,7 +110,8 @@
 		    "inline": [
 			"sudo install -o consul -g consul -m 444 /tmp/auto-join.hcl.tmpl /etc/consul",
 			"sudo install -o root -g root -m 555 /tmp/update-consul-join-config /usr/local/bin",
-			"sudo rm -f /tmp/auto-join.hcl.tmpl /tmp/update-consul-join-config"
+			"sudo rm -f /tmp/auto-join.hcl.tmpl /tmp/update-consul-join-config",
+			"sudo apt-get install -y awscli"
 		    ]
 		}
 	    }
