@@ -10,7 +10,7 @@ resource aws_instance "product-api" {
     vpc_security_group_ids      = ["${aws_security_group.product_server_sg.id}"]
     iam_instance_profile        = "${aws_iam_instance_profile.consul_client_iam_profile.name}"
     
-    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-product-api-server-{count.index}"), map("role", "product-api-server"))}"
+    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-product-api-server-${count.index}"), map("role", "product-api-server"))}"
 }
 
 output "product_api_servers" {
