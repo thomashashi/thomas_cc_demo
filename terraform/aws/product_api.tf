@@ -1,7 +1,7 @@
 # Deploy a Product API server
 
 resource aws_instance "product-api" {
-    ami                         = "${data.aws_ami.product-api.id}"
+    ami                         = "${var.mode == "connect" ? data.aws_ami.product-api-connect.id : data.aws_ami.product-api-noconnect.id}"
     count			= "${var.client_product_count}"
     instance_type		= "${var.client_machine_type}"
     key_name			= "${var.ssh_key_name}"

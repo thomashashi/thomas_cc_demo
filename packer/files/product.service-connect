@@ -1,0 +1,18 @@
+[Unit]
+Description=product.py - Listing service API - With Consul Connect
+After=network.target
+
+[Service]
+Environment=DB_ADDR=localhost
+Environment=DB_PORT=5001
+Environment=DB_USER=mongo
+Environment=DB_PW=mongo
+Environment=DB_NAME=bbthe90s
+Environment=COL_NAME=products
+Type=simple
+User=ubuntu
+ExecStart=/usr/bin/python3 /home/ubuntu/src/product-service/product.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

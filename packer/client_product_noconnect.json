@@ -12,7 +12,7 @@
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-product",
+        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-product-noconnect",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
@@ -38,9 +38,9 @@
         },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-product-{{timestamp}}",
+        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-product-noconnect-{{timestamp}}",
         "tags": {
-            "Name": "CC Demo Ubuntu Product Server",
+            "Name": "CC Demo Ubuntu Product Server - Without Consul Connect",
             "owner": "thomas@hashicorp.com",
             "project": "CC Demo SE East Quarterly Training",
             "Base_AMI_Name": "{{ .SourceAMIName }}",
@@ -57,16 +57,25 @@
       },
       {
         "type": "file",
-        "source": "services/product.hcl",
+        "source": "services/product-noconnect.hcl",
         "destination": "/tmp/product.hcl"
+      },
+      {
+	"type": "file",
+	"source": "files/product.service-noconnect",
+	"destination": "/tmp/product.service"
       },
       {
         "type": "shell",
         "inline": [
           "sudo chmod a+x /tmp/install_products.sh",
           "sudo /tmp/install_products.sh",
+	  "sudo rm -f /tmp/install_products.sh",
           "sudo mv /tmp/product.hcl /etc/consul/product.hcl",
+	  "sudo mv /tmp/product.service /lib/systemd/system/product.service",
           "sudo chown -R consul:consul /etc/consul",
+	  "sudo systemctl daemon-reload",
+	  "sudo systemctl enable product.service",
           "sudo systemctl enable consul",
           "sudo systemctl enable consul_enable_acl.service"
         ]

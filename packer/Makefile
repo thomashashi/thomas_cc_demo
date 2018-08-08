@@ -5,11 +5,11 @@ DEFAULT:
 	@echo Run 'make gcp' or 'make aws' to build appropriate images
 	@echo Set the environment variable DC_NAME to name the images
 
-aws: aws_consul_server aws_vault_server aws_client_listing aws_client_product aws_client_webclient aws_without_connect aws_wit_connect
+aws: aws_consul_server aws_vault_server aws_client_listing aws_client_webclient aws_without_connect aws_with_connect
 
-aws_without_connect: aws_client_mongodb_noconnect
+aws_without_connect: aws_client_mongodb_noconnect aws_client_product_noconnect
 
-aws_with_connect: aws_client_mongodb_connect
+aws_with_connect: aws_client_mongodb_connect aws_client_product_connect
 
 aws_consul_base: .built.aws_consul_base
 
@@ -25,7 +25,9 @@ aws_client_mongodb_connect: aws_consul_client aws_client_mongodb_noconnect .buil
 
 aws_client_mongodb_noconnect: aws_consul_client .built.aws_client_mongodb_noconnect
 
-aws_client_product: aws_consul_client .built.aws_client_product
+aws_client_product_connect: aws_consul_client aws_client_product_noconnect .built.aws_client_product_connect
+
+aws_client_product_noconnect: aws_consul_client .built.aws_client_product_noconnect
 
 aws_client_webclient: aws_consul_client .built.aws_client_webclient
 
@@ -57,9 +59,13 @@ aws_client_webclient: aws_consul_client .built.aws_client_webclient
 	DC_NAME=east packer build -only amazon-ebs client_mongodb_connect.json
 	touch .built.aws_client_mongodb_connect
 
-.built.aws_client_product: client_product.json files/install_products.sh services/product.hcl
-	DC_NAME=east packer build -only amazon-ebs client_product.json
-	touch .built.aws_client_product
+.built.aws_client_product_connect: client_product_connect.json services/product-connect.hcl files/product.service-connect
+	DC_NAME=east packer build -only amazon-ebs client_product_connect.json
+	touch .built.aws_client_product_connect
+
+.built.aws_client_product_noconnect: client_product_noconnect.json services/product-noconnect.hcl files/product.service-noconnect files/install_products.sh
+	DC_NAME=east packer build -only amazon-ebs client_product_noconnect.json
+	touch .built.aws_client_product_noconnect
 
 .built.aws_client_webclient: client_webclient.json files/install_webclient.sh services/web_client.hcl
 	DC_NAME=east packer build -only amazon-ebs client_webclient.json
