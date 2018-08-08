@@ -12,11 +12,11 @@
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-webclient",
+        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-webclient-connect",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-client",
+        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-webclient-noconnect",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -30,7 +30,7 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "name": "{{ user `dc_name` }}-aws-ubuntu-consul-client-*",
+                "name": "{{ user `dc_name` }}-aws-ubuntu-webclient-noconnect-*",
                 "root-device-type": "ebs"
             },
             "owners": ["753646501470"],
@@ -38,9 +38,9 @@
         },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-webclient-{{timestamp}}",
+        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-webclient-connect-{{timestamp}}",
         "tags": {
-            "Name": "CC Demo Ubuntu Webclient",
+            "Name": "CC Demo Ubuntu Webclient - With Consul Connect",
             "owner": "thomas@hashicorp.com",
             "project": "CC Demo SE East Quarterly Training",
             "Base_AMI_Name": "{{ .SourceAMIName }}",
@@ -52,23 +52,21 @@
     "provisioners": [
       {
         "type": "file",
-        "source": "files/install_webclient.sh",
-        "destination": "/tmp/install_webclient.sh"
+        "source": "services/web_client-connect.hcl",
+        "destination": "/tmp/web_client.hcl"
       },
       {
-        "type": "file",
-        "source": "services/web_client.hcl",
-        "destination": "/tmp/web_client.hcl"
+	"type": "file",
+	"source": "files/web_client.service-connect",
+	"destination": "/tmp/web_client.service"
       },
       {
         "type": "shell",
         "inline": [
-          "sudo chmod a+x /tmp/install_webclient.sh",
-          "sudo /tmp/install_webclient.sh",
           "sudo mv /tmp/web_client.hcl /etc/consul/web_client.hcl",
-          "sudo chown -R consul:consul /etc/consul",
-          "sudo systemctl enable consul",
-          "sudo systemctl enable consul_enable_acl.service"
+	  "sudo mv /tmp/web_client.service /lib/systemd/system/web_client.service",
+	  "sudo systemctl daemon-reload",
+	  "sudo systemctl enable web_client.service"
         ]
       }
     ]

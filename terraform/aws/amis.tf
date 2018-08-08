@@ -88,13 +88,28 @@ data "aws_ami" "listing-api" {
     }
 }
 
-data "aws_ami" "webclient" {
+data "aws_ami" "webclient-connect" {
     most_recent = true
     owners      = ["753646501470"] # hc-sc-demos-2018
 
     filter {
         name   = "name"
-        values = ["east-aws-ubuntu-webclient-*"]
+        values = ["east-aws-ubuntu-webclient-connect-*"]
+    }
+
+    filter {
+        name   = "tag:owner"
+        values = ["thomas@hashicorp.com"]
+    }
+}
+
+data "aws_ami" "webclient-noconnect" {
+    most_recent = true
+    owners      = ["753646501470"] # hc-sc-demos-2018
+
+    filter {
+        name   = "name"
+        values = ["east-aws-ubuntu-webclient-noconnect-*"]
     }
 
     filter {
