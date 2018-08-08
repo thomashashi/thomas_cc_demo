@@ -136,6 +136,21 @@
 		"sudo systemctl daemon-reload",
 		"sudo systemctl disable consul.service"
 	    ]
+	},
+	{
+	    "type": "file",
+	    "only": ["amazon-ebs"],
+	    "source": "files/dnsmasq.d.consul",
+	    "destination": "/tmp/dnsmasq.d.consul"
+	},
+	{
+	    "type": "shell",
+	    "only": ["amazon-ebs"],
+	    "inline": [
+		"sudo apt-get install -y dnsmasq",
+		"sudo install -m 444 /tmp/dnsmasq.d.consul /etc/dnsmasq.d/10-consul",
+		"rm -f /tmp/dnsmasq.d.consul"
+	    ]
 	}
     ]
 }
