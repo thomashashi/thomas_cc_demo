@@ -5,7 +5,11 @@ DEFAULT:
 	@echo Run 'make gcp' or 'make aws' to build appropriate images
 	@echo Set the environment variable DC_NAME to name the images
 
-aws: aws_consul_server aws_vault_server aws_client_listing aws_client_mongodb aws_client_product aws_client_webclient
+aws: aws_consul_server aws_vault_server aws_client_listing aws_client_product aws_client_webclient aws_without_connect aws_wit_connect
+
+aws_without_connect: aws_client_mongodb_noconnect
+
+aws_with_connect: aws_client_mongodb_connect
 
 aws_consul_base: .built.aws_consul_base
 
@@ -17,7 +21,9 @@ aws_vault_server: aws_consul_client .built.aws_vault_server
 
 aws_client_listing: aws_consul_client .built.aws_client_listing
 
-aws_client_mongodb: aws_consul_client .built.aws_client_mongodb
+aws_client_mongodb_connect: aws_consul_client aws_client_mongodb_noconnect .built.aws_client_mongodb_connect
+
+aws_client_mongodb_noconnect: aws_consul_client .built.aws_client_mongodb_noconnect
 
 aws_client_product: aws_consul_client .built.aws_client_product
 
@@ -43,9 +49,13 @@ aws_client_webclient: aws_consul_client .built.aws_client_webclient
 	DC_NAME=east packer build -only amazon-ebs client_listing.json
 	touch .built.aws_client_listing
 
-.built.aws_client_mongodb: client_mongodb.json files/install_mongodb.sh services/mongodb.hcl
-	DC_NAME=east packer build -only amazon-ebs client_mongodb.json
-	touch .built.aws_client_mongodb
+.built.aws_client_mongodb_noconnect: client_mongodb_noconnect.json files/install_mongodb.sh services/mongodb-noconnect.hcl files/mongod.conf-noconnect
+	DC_NAME=east packer build -only amazon-ebs client_mongodb_noconnect.json
+	touch .built.aws_client_mongodb_noconnect
+
+.built.aws_client_mongodb_connect: client_mongodb_connect.json services/mongodb-connect.hcl files/mongod.conf-connect
+	DC_NAME=east packer build -only amazon-ebs client_mongodb_connect.json
+	touch .built.aws_client_mongodb_connect
 
 .built.aws_client_product: client_product.json files/install_products.sh services/product.hcl
 	DC_NAME=east packer build -only amazon-ebs client_product.json

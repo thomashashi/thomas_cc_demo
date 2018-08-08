@@ -15,3 +15,9 @@ aws_region      = "us-east-1"
 # This is the name of an already existing SSH Keypair in AWS
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
 ssh_key_name    = "thomas-yubikey"
+
+# By default, we start in a "noconnect" mode --- this tells Terraform
+# to deploy the version of this demo that has Consul but does not use
+# Consul Connect. But when you switch to "connect" mode, this will
+# cause Terraform to deploy the version which has Consul Connect enabled
+mode             = "noconnect"

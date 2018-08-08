@@ -1,7 +1,7 @@
 # Deploy a MongoDB Server
 
 resource aws_instance "mongo" {
-    ami                         = "${data.aws_ami.mongo.id}"
+    ami                         = "${var.mode == "connect" ? data.aws_ami.mongo-connect.id : data.aws_ami.mongo-noconnect.id}"
     count			= "${var.client_db_count}"
     instance_type		= "${var.client_machine_type}"
     key_name			= "${var.ssh_key_name}"

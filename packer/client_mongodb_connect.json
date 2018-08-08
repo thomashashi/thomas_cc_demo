@@ -12,11 +12,11 @@
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-mongodb",
+        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-mongodb-connect",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-client",
+        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-mongodb-noconnect",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -30,7 +30,7 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "name": "{{ user `dc_name` }}-aws-ubuntu-consul-client-*",
+                "name": "{{ user `dc_name` }}-aws-ubuntu-mongodb-noconnect-*",
                 "root-device-type": "ebs"
             },
             "owners": ["753646501470"],
@@ -38,9 +38,9 @@
         },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-mongodb-{{timestamp}}",
+        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-mongodb-connect-{{timestamp}}",
         "tags": {
-            "Name": "CC Demo Ubuntu MongoDB Server",
+            "Name": "CC Demo Ubuntu MongoDB Server - With Connect",
             "owner": "thomas@hashicorp.com",
             "project": "CC Demo SE East Quarterly Training",
             "Base_AMI_Name": "{{ .SourceAMIName }}",
@@ -52,23 +52,19 @@
     "provisioners": [
       {
         "type": "file",
-        "source": "files/install_mongodb.sh",
-        "destination": "/tmp/install_mongodb.sh"
+        "source": "services/mongodb-connect.hcl",
+        "destination": "/tmp/mongodb.hcl"
       },
       {
-        "type": "file",
-        "source": "services/mongodb.hcl",
-        "destination": "/tmp/mongodb.hcl"
+	  "type": "file",
+	  "source": "files/mongod.conf-connect",
+	  "destination": "/tmp/mongod.conf"
       },
       {
         "type": "shell",
         "inline": [
-          "sudo chmod a+x /tmp/install_mongodb.sh",
-          "sudo /tmp/install_mongodb.sh",
           "sudo mv /tmp/mongodb.hcl /etc/consul/",
-          "sudo chown -R consul:consul /etc/consul",
-          "sudo systemctl enable consul",
-          "sudo systemctl enable consul_enable_acl.service"
+	  "sudo mv /tmp/mongod.conf /etc/mongod.conf"
         ]
       }
     ]

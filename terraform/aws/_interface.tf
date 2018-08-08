@@ -18,6 +18,17 @@ variable "ssh_key_name" {
 }
 
 # Optional
+
+# By default, we start in a "noconnect" mode --- this tells Terraform
+# to deploy the version of this demo that has Consul but does not use
+# Consul Connect. But when you switch to "connect" mode, this will
+# cause Terraform to deploy the version which has Consul Connect enabled
+variable "mode" {
+    type = "string"
+    description = "Set to 'noconnect' to not use Consul Connect, 'connect' to use Consul Connect"
+    default = "noconnect"
+}
+
 variable "server_machine_type" {
   description = "The machine type (size) to deploy"
   default     = "t2.micro"
