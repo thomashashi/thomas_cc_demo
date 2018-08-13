@@ -1,0 +1,14 @@
+[Unit]
+Description=client.py - Client service API - No Consul Connect
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Environment=LISTING_URI=http://localhost:10002
+Environment=PRODUCT_URI=http://localhost:10001
+ExecStart=/usr/bin/python3 /home/ubuntu/src/simple-client/client.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

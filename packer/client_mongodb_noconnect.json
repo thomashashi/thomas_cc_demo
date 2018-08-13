@@ -8,12 +8,11 @@
         "aws_region": "{{ env `AWS_REGION` }}",
         "dc_name": "{{ env `DC_NAME` }}",
         "role": "consul-client-listing",
-        "type": "{{ env `NODE_TYPE` }}",
-	"vault_version": "0.10.4+ent"
+        "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-vault-server",
+        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-mongodb-noconnect",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
@@ -39,64 +38,43 @@
         },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-vault-server-{{timestamp}}",
+        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-mongodb-noconnect-{{timestamp}}",
         "tags": {
-            "Name": "CC Demo Ubuntu Vault Server",
+            "Name": "CC Demo Ubuntu MongoDB Server - Without Consul Connect",
             "owner": "thomas@hashicorp.com",
             "project": "CC Demo SE East Quarterly Training",
             "Base_AMI_Name": "{{ .SourceAMIName }}",
             "Base_AMI": "{{ .SourceAMI }}",
-            "role": "{{ user `role` }}",
-	    "vault_version": "{{ user `vault_version` }}"
-        }
+            "role": "{{ user `role` }}"
+        },
+	"ami_groups": ["all"]
       }
     ],
     "provisioners": [
       {
         "type": "file",
-        "source": "binaries/vault-enterprise_{{ user `vault_version` }}_linux_amd64.zip",
-        "destination": "/tmp/vault.zip"
+        "source": "files/install_mongodb.sh",
+        "destination": "/tmp/install_mongodb.sh"
       },
       {
         "type": "file",
-        "source": "files/install_vault.sh",
-        "destination": "/tmp/install_vault.sh"
+        "source": "services/mongodb-noconnect.hcl",
+        "destination": "/tmp/mongodb.hcl"
       },
       {
-        "type": "file",
-        "source": "files/vault_config.hcl",
-        "destination": "/tmp/config.hcl"
-      },
-      {
-	"type": "file",
-	"destination": "/tmp/seal.hcl",
-	"override": {
-	  "googlecompute": {
-	    "source": "files/vault_gcpkms_config.hcl"
-	  },
-	  "amazon-ebs": {
-	    "source": "files/vault_awskms_config.hcl"
-	  }
-	}
-      },
-      {
-        "type": "file",
-        "source": "files/enable_vault_acl.sh",
-        "destination": "/tmp/enable_vault_acl.sh"
+	  "type": "file",
+	  "source": "files/mongod.conf-noconnect",
+	  "destination": "/tmp/mongod.conf"
       },
       {
         "type": "shell",
         "inline": [
-          "sudo chmod a+x /tmp/install_vault.sh",
-          "sudo /tmp/install_vault.sh",
-          "sudo mv /tmp/config.hcl /etc/vault/config.hcl",
-	  "sudo mv /tmp/seal.hcl /etc/vault/seal.hcl",
+          "sudo chmod a+x /tmp/install_mongodb.sh",
+          "sudo /tmp/install_mongodb.sh",
+          "sudo mv /tmp/mongodb.hcl /etc/consul/",
+	  "sudo mv /tmp/mongod.conf /etc/mongod.conf",
           "sudo chown -R consul:consul /etc/consul",
-          "sudo chown -R vault:vault /etc/vault",
           "sudo systemctl enable consul",
-          "sudo systemctl enable vault",
-          "sudo mv /tmp/enable_vault_acl.sh /etc/consul/enable_acl.sh",
-          "sudo chmod a+x /etc/consul/enable_acl.sh",
           "sudo systemctl enable consul_enable_acl.service"
         ]
       }

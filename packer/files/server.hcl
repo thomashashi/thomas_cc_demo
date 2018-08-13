@@ -11,10 +11,6 @@ acl_master_token   = "abc123"
 acl_down_policy    = "extend-cache"
 acl_default_policy = "deny"
 
-retry_join        = [
-    "provider=gce project_name=connect-env tag_value=consul-server"
-]
-
 autopilot         = {
     cleanup_dead_servers      = true,
     last_contact_threshold    ="200ms",
