@@ -46,7 +46,8 @@
             "Base_AMI_Name": "{{ .SourceAMIName }}",
             "Base_AMI": "{{ .SourceAMI }}",
             "role": "{{ user `role` }}"
-        }
+        },
+	"ami_groups": ["all"]
       }
     ],
     "provisioners": [

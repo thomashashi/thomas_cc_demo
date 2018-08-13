@@ -48,7 +48,8 @@
             "Base_AMI": "{{ .SourceAMI }}",
             "consul_version": "{{ user `consul_version` }}",
 	    "role": "{{ user `role` }}"
-        }
+        },
+	"ami_groups": ["all"]
       }
     ],
     "provisioners": [
