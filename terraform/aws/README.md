@@ -215,9 +215,9 @@ Switch to _CONNECT_ window
     4. `listing` doesn't have to manage certificates, keys, CRLs, CA certs...
     5. `listing` simply sees _simple, unencrypted traffic_ coming to it
  2. Point out that by configuring `listing` to listen only on `localhost`, you've reduced the security boundary to individual server instances --- all network traffic is _encrypted_
- 3. Point out that to connect `web_client` to it's backend services, all you had to do was 
+ 3. Point out that to connect `web_client` to its backend services, all you had to do was 
     1. Enable Connect
-    2. Tell `web_client` that it's upstream services are reachable on localhost ports
+    2. Tell `web_client` that its upstream services are reachable on localhost ports
     3. Consul Connect handles balancing traffic between 1, 2, 20, 100 healthy instances
     4. Consul Connect _encrypts_ all network traffic
     5. `web_client` knows _nothing_ about TLS
