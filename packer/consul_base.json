@@ -54,6 +54,17 @@
     ],
     "provisioners": [
 	{
+	    "type": "shell",
+	    "inline": [
+		"sudo systemctl disable apt-daily.service",
+		"sudo systemctl disable apt-daily.timer",
+		"echo 'APT::Periodic::Enable \"0\";' | sudo tee -a /etc/apt/apt.conf.d/99noperiodic",
+		"echo 'APT::Periodic::Update-Package-Lists \"0\";' | sudo tee -a /etc/apt/apt.conf.d/99noperiodic",
+		"echo 'APT::Periodic::Unattended-Upgrade \"0\";' | sudo tee -a /etc/apt/apt.conf.d/99noperiodic",
+		"sudo rm /usr/lib/apt/apt.systemd.daily"
+	    ]
+	},
+	{
 	    "type": "file",
 	    "source": "files/install_base.sh",
 	    "destination": "/tmp/install_base.sh"
