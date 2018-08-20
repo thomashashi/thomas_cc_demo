@@ -53,11 +53,6 @@
     "provisioners": [
       {
         "type": "file",
-        "source": "files/vault_ca.hcl",
-        "destination": "/tmp/vault_ca.hcl"
-      },
-      {
-        "type": "file",
         "source": "files/server.hcl",
         "destination": "/tmp/server.hcl"
       },
@@ -65,7 +60,6 @@
         "type": "shell",
         "inline": [
           "sleep 15",
-          "sudo mv /tmp/vault_ca.hcl /etc/consul/vault_ca.hcl",
           "sudo mv /tmp/server.hcl /etc/consul/server.hcl",
           "sudo systemctl enable consul.service",
           "sudo systemctl enable consul_enable_acl.service",
