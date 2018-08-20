@@ -67,7 +67,8 @@
           "sudo mv /tmp/product.hcl /etc/consul/product.hcl",
 	  "sudo mv /tmp/product.service /lib/systemd/system/product.service",
 	  "sudo systemctl daemon-reload",
-	  "sudo systemctl enable product.service"
+	  "sudo systemctl enable product.service",
+	  "sudo rm -rf /opt/consul/*"
         ]
       }
     ]
