@@ -6,7 +6,7 @@ DEFAULT:
 	@echo Set the environment variable DC_NAME to name the images
 
 .PHONY: aws
-aws: aws_consul_server aws_vault_server aws_without_connect aws_with_connect
+aws: aws_consul_server aws_without_connect aws_with_connect
 
 .PHONY: aws_without_connect
 aws_without_connect: aws_client_mongodb_noconnect aws_client_product_noconnect aws_client_webclient_noconnect aws_client_listing_noconnect
@@ -22,9 +22,6 @@ aws_consul_client: aws_consul_base .built.aws_consul_client
 
 .PHONY: aws_consul_server
 aws_consul_server: aws_consul_client .built.aws_consul_server
-
-.PHONY: aws_vault_server
-aws_vault_server: aws_consul_client .built.aws_vault_server
 
 .PHONY: aws_client_listing_connect
 aws_client_listing_connect: aws_consul_client aws_client_listing_noconnect .built.aws_client_listing_connect
@@ -58,13 +55,9 @@ aws_client_webclient_noconnect: aws_consul_client .built.aws_client_webclient_no
 	DC_NAME=east packer build -only amazon-ebs consul_client.json
 	touch .built.aws_consul_client
 
-.built.aws_consul_server: consul_server.json files/server.hcl files/vault_ca.hcl
+.built.aws_consul_server: consul_server.json files/server.hcl
 	DC_NAME=east packer build -only amazon-ebs consul_server.json
 	touch .built.aws_consul_server
-
-.built.aws_vault_server: vault_server.json files/vault_config.hcl files/vault_awskms_config.hcl files/install_vault.sh files/enable_vault_acl.sh
-	DC_NAME=east packer build -only amazon-ebs vault_server.json
-	touch .built.aws_vault_server
 
 .built.aws_client_listing: client_listing.json files/install_node.sh services/listing.hcl
 	DC_NAME=east packer build -only amazon-ebs client_listing.json
