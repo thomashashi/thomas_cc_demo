@@ -6,10 +6,6 @@ log_level          = "INFO"
 server             = true
 ui                 = true
 non_voting_server  = false
-acl_datacenter     = "east"
-acl_master_token   = "abc123"
-acl_down_policy    = "extend-cache"
-acl_default_policy = "deny"
 
 autopilot         = {
     cleanup_dead_servers      = true,
