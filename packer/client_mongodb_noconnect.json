@@ -75,7 +75,8 @@
 	  "sudo mv /tmp/mongod.conf /etc/mongod.conf",
           "sudo chown -R consul:consul /etc/consul",
           "sudo systemctl enable consul",
-          "sudo systemctl enable consul_enable_acl.service"
+          "sudo systemctl enable consul_enable_acl.service",
+	  "sudo rm -rf /opt/consul/*"
         ]
       }
     ]

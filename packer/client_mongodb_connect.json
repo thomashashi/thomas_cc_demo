@@ -65,7 +65,8 @@
         "type": "shell",
         "inline": [
           "sudo mv /tmp/mongodb.hcl /etc/consul/",
-	  "sudo mv /tmp/mongod.conf /etc/mongod.conf"
+	  "sudo mv /tmp/mongod.conf /etc/mongod.conf",
+	  "sudo rm -rf /opt/consul/*"
         ]
       }
     ]
