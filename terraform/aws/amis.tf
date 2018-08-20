@@ -6,11 +6,6 @@ data "aws_ami" "consul" {
         name   = "name"
         values = ["east-aws-ubuntu-consul-server-*"]
     }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
-    }
 }
 
 data "aws_ami" "mongo-noconnect" {
@@ -20,11 +15,6 @@ data "aws_ami" "mongo-noconnect" {
     filter {
         name   = "name"
         values = ["east-aws-ubuntu-mongodb-noconnect-*"]
-    }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
     }
 }
 
@@ -36,11 +26,6 @@ data "aws_ami" "mongo-connect" {
         name   = "name"
         values = ["east-aws-ubuntu-mongodb-connect-*"]
     }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
-    }
 }
 
 data "aws_ami" "product-api-noconnect" {
@@ -50,11 +35,6 @@ data "aws_ami" "product-api-noconnect" {
     filter {
         name   = "name"
         values = ["east-aws-ubuntu-product-noconnect-*"]
-    }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
     }
 }
 
@@ -66,11 +46,6 @@ data "aws_ami" "product-api-connect" {
         name   = "name"
         values = ["east-aws-ubuntu-product-connect-*"]
     }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
-    }
 }
 
 data "aws_ami" "listing-api-connect" {
@@ -80,11 +55,6 @@ data "aws_ami" "listing-api-connect" {
     filter {
         name   = "name"
         values = ["east-aws-ubuntu-listing-server-connect-*"]
-    }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
     }
 }
 
@@ -96,11 +66,6 @@ data "aws_ami" "listing-api-noconnect" {
         name   = "name"
         values = ["east-aws-ubuntu-listing-server-noconnect-*"]
     }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
-    }
 }
 
 data "aws_ami" "webclient-connect" {
@@ -111,11 +76,6 @@ data "aws_ami" "webclient-connect" {
         name   = "name"
         values = ["east-aws-ubuntu-webclient-connect-*"]
     }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
-    }
 }
 
 data "aws_ami" "webclient-noconnect" {
@@ -125,10 +85,5 @@ data "aws_ami" "webclient-noconnect" {
     filter {
         name   = "name"
         values = ["east-aws-ubuntu-webclient-noconnect-*"]
-    }
-
-    filter {
-        name   = "tag:owner"
-        values = ["thomas@hashicorp.com"]
     }
 }
