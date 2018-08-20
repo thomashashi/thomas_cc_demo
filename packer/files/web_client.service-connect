@@ -7,6 +7,7 @@ Type=simple
 User=ubuntu
 Environment=LISTING_URI=http://localhost:10002
 Environment=PRODUCT_URI=http://localhost:10001
+Environment=IS_CONNECT=1
 ExecStart=/usr/bin/python3 /home/ubuntu/src/simple-client/client.py
 Restart=always
 
