@@ -209,7 +209,7 @@ Switch to _CONNECT_ window
 
 ### Making the connection
 
- 1. Point out that all you did to change a standard Node application was to configure Consul Connecat and  _tell the app to listen only on localhost_
+ 1. Point out that all you did to change a standard Node application was to configure Consul Connect and  _tell the app to listen only on localhost_
     1. `listing` knows _nothing_ about TLS
     2. `listing` knows _nothing_ about mutual-TLS authentication
     4. `listing` doesn't have to manage certificates, keys, CRLs, CA certs...
