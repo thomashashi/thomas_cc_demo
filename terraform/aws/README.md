@@ -129,6 +129,8 @@ Switch to the _NO-CONNECT_ window
     2. The line `Environment=PRODUCT_URI=http://product.service.consul:5000` tells `web_client` how to talk to the `product` service
     3. Note how both are using Consul for service discovery
  4. `sudo tcpdump -A 'host listing.service.consul and port 8000 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
+    - This `tcpdump` command simply prints the packet data without any of the headers. The point is to demonstrate how the packet
+      data is in plaintext
  5. Switch to the web browser and reload the page a few times
  6. Return to the terminal and look at the data going back and forth across the network. See how it's in plaintext.
  7. Hit _Cntl-C_ to exit tcpdump
@@ -184,8 +186,8 @@ Switch to _CONNECT_ window
     `1 1 20191 ip-172-31-63-3.node.east.consul.`
      1. The third number (`20191` in this case) is the port for the _Consul Connect Proxy_ for an instance of the `listing` service
      2. The hostname (`ip-172-31-63-3.node.east.consul.`) is the internal hostname for that Connect proxy 
- 6. `sudo tcpdump -A 'host <node> and port <port> and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
-    1. Replace `<node>` with the node and `<port>` with the port from the previous step
+ 6. `sudo tcpdump -A 'host <hostname> and port <port> and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
+    1. Replace `<hostname>` with the hostname and `<port>` with the port from the previous step
  7. Go to the browser window, reload a few times
  8. Switch back to the terminal, show how all the traffic is TLS-encrypted gibberish
  9. Hit _Cntl-C_ to exit tcpdump
