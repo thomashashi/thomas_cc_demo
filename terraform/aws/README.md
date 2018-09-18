@@ -209,7 +209,7 @@ Switch to _CONNECT_ window
  4. `cat /etc/consul/listing.hcl`
     1. Look at the `connect=` stanza
     2. Point out that not only is this allowing the `listing` service to connect to `mongodb` via Connect,
-       but it's also making `listing` availble over connect
+       but it's also making `listing` available over connect
 
 ### Making the connection
 
