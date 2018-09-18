@@ -26,6 +26,8 @@ You will need:
  2. The appropriate [Terraform binary](https://www.terraform.io/downloads.html) for your system
  3. An AWS account with credentials which allow you to deploy infrastructure
  4. An already-existing [Amazon EC2 Key Pair](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html)
+    - *NOTE*: if the EC2 Key Pair you specify is not your default ssh key, you will need to use `ssh -i /path/to/private_key` instead
+      of `ssh` in the commands below
 
 ## Preparation
 
