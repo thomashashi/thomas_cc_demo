@@ -1,3 +1,5 @@
+*~
+*.DS_Store
 packer/binaries/*
 packer/files/encrypt.hcl
 packer/.built*
