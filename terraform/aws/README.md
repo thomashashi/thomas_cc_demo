@@ -236,6 +236,8 @@ Switch to _CONNECT_ window
 
 ### Intentions
 
+- Note: To view Intentions in the UI, please Edit Terraform provisioned AWS Security Group and an Inbound Rule to Allow TCP port 8500 from your IP address. This is not done by default due to security concerns. The Consul UI can be accessed using one of the consul_server public IP address: `http://<consul_server_public_ip>:8500/ui`.
+
 Still on the `listing` server
 
  1. `consul intention create -deny '*' '*'`
