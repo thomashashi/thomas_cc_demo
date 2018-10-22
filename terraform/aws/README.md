@@ -14,7 +14,12 @@ For reference, the three tiers are:
  2. Two internal apis (a `listing` service written in Node, and a `product` service written in Python), both of which store data in ...
  3. A MongoDB instance
 
-In the "non-Connect" version of the demo, services find each other using the [Service Discovery](https://www.consul.io/discovery.html) mechanism in Consul. In the "Connect" version of the demo, we introduce [Service Segmentation](https://www.consul.io/segmentation.html).
+In the "non-Connect" version of the demo, services find each other using the [Service Discovery](https://www.consul.io/discovery.html) mechanism in Consul.
+- [Architecture diagram for Non-connect version](../../diagrams/Consul-demo-No-connect.png).
+
+In the "Connect" version of the demo, we introduce [Service Segmentation](https://www.consul.io/segmentation.html).
+- [Architecture diagram for Connect version](../../diagrams/Consul-demo-Connect.png).
+- [Architecture diagram for Connect version with port #s](../../diagrams/Consul-demo-Connect2.png).
 
 The code which built all of the images is in the `packer` directory located at the top level of this repo. While you shouldn't have to build the images which are used in this demo, the Packer code is there to enable you to do so, and also to allow you to see how the application configuration changes as you move your infrastructure to Consul Connect.
 
@@ -44,7 +49,7 @@ It's recommended that when you demo that you make two copies of the repo, config
     ```
     Replace `<your access key ID>` with your AWS Access Key ID and `<your secret key>` with your AWS Secret Access Key (see [Access Keys (Access Key ID and Secret Access Key)](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys) for more help). *NOTE*: Currently, the Packer-built AMIs are only in `us-east-1`.
 
-In the rest of this demo we will call these windows respectively the _NO-CONNECT_ and the _CONNECT_ windows. 
+In the rest of this demo we will call these windows respectively the _NO-CONNECT_ and the _CONNECT_ windows.
 
 ### Check out code
 
@@ -161,11 +166,11 @@ Switch to _CONNECT_ window
  	 proxy = {
 	  config = {
 	    upstreams = [
-	      { 
+	      {
 		destination_name = "listing",
 		local_bind_port = 10002
 	      },
-	      { 
+	      {
 		destination_name = "product"
 		local_bind_port  = 10001
 	      }
@@ -175,9 +180,9 @@ Switch to _CONNECT_ window
       }
      ```
      2. Point out that this means that the `web_client` service is telling Consul Connect that
-        1. It wants to talk to the `listing` service via Consul Connect, and that to reach it 
+        1. It wants to talk to the `listing` service via Consul Connect, and that to reach it
 	   it will connect to `localhost` on port `10002`
-	2. It wants to talk to the `product` service via Consul Connect, and that to reach it 
+	2. It wants to talk to the `product` service via Consul Connect, and that to reach it
 	   it will connect to `localhost` on port `10003`
      3. Point out that with this, you have made a link between `web_client` and the `listing` and
         `product` services, and that now the un-encrypted traffic _only goes to a process running
@@ -185,7 +190,7 @@ Switch to _CONNECT_ window
  5. `dig +short listing.connect.consul srv` --- This will spit out some lines like
     `1 1 20191 ip-172-31-63-3.node.east.consul.`
      1. The third number (`20191` in this case) is the port for the _Consul Connect Proxy_ for an instance of the `listing` service
-     2. The hostname (`ip-172-31-63-3.node.east.consul.`) is the internal hostname for that Connect proxy 
+     2. The hostname (`ip-172-31-63-3.node.east.consul.`) is the internal hostname for that Connect proxy
  6. `sudo tcpdump -A 'host <hostname> and port <port> and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
     1. Replace `<hostname>` with the hostname and `<port>` with the port from the previous step
  7. Go to the browser window, reload a few times
@@ -195,7 +200,7 @@ Switch to _CONNECT_ window
 
 ### Connect to the `listing` service
 
- 1. `terraform output listing_api_servers` 
+ 1. `terraform output listing_api_servers`
  2. `ssh ubuntu@<first ip returned>`
     1. When asked `Are you sure you want to continue connecting (yes/no)?` answer `yes` and hit enter
  3. `cat /lib/systemd/system/listing.service`
@@ -219,7 +224,7 @@ Switch to _CONNECT_ window
     4. `listing` doesn't have to manage certificates, keys, CRLs, CA certs...
     5. `listing` simply sees _simple, unencrypted traffic_ coming to it
  2. Point out that by configuring `listing` to listen only on `localhost`, you've reduced the security boundary to individual server instances --- all network traffic is _encrypted_
- 3. Point out that to connect `web_client` to its backend services, all you had to do was 
+ 3. Point out that to connect `web_client` to its backend services, all you had to do was
     1. Enable Connect
     2. Tell `web_client` that its upstream services are reachable on localhost ports
     3. Consul Connect handles balancing traffic between 1, 2, 20, 100 healthy instances
@@ -230,6 +235,8 @@ Switch to _CONNECT_ window
     8. `web_client` simply makes the same _simple, unencrypted requests_ it always has
 
 ### Intentions
+
+- Note: To view Intentions in the UI, please Edit Terraform provisioned AWS Security Group and an Inbound Rule to Allow TCP port 8500 from your IP address. This is not done by default due to security concerns. The Consul UI can be accessed using one of the consul_server public IP address: `http://<consul_server_public_ip>:8500/ui`.
 
 Still on the `listing` server
 

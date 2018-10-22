@@ -1,5 +1,6 @@
 {
     "variables": {
+    	"owner_tag": "thomas@hashicorp.com",
         "gcp_account_file": "{{ env `GCP_ACCOUNT_FILE_JSON`}}",
         "gcp_project_id": "{{ env `GCP_PROJECT_ID` }}",
         "gcp_zone": "{{ env `GCP_ZONE` }}",
@@ -9,7 +10,7 @@
         "dc_name": "{{ env `DC_NAME` }}",
         "role": "consul-base",
         "type": "{{ env `NODE_TYPE` }}",
-	"consul_version": "1.2.2"
+	"consul_version": "1.3.0"
     },
     "builders": [
       {
@@ -42,7 +43,7 @@
 	"ami_name": "{{ user `dc_name` }}-aws-ubuntu-consul-base-{{timestamp}}",
 	"tags": {
             "Name": "CC Demo Ubuntu Consul Base",
-            "owner": "thomas@hashicorp.com",
+            "owner": "{{ user `owner_tag` }}",
             "project": "CC Demo SE East Quarterly Training",
             "Base_AMI_Name": "{{ .SourceAMIName }}",
             "Base_AMI": "{{ .SourceAMI }}",
