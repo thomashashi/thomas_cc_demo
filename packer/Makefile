@@ -1,5 +1,6 @@
 ENCRYPT_CONFIG := files/encrypt.hcl
 
+AMI_OWNER=106962084910
 
 DEFAULT:
 	@echo Run 'make gcp' or 'make aws' to build appropriate images
@@ -47,51 +48,51 @@ aws_client_webclient_connect: aws_consul_client aws_client_webclient_noconnect .
 aws_client_webclient_noconnect: aws_consul_client .built.aws_client_webclient_noconnect
 
 .built.aws_consul_base: consul_base.json files/install_base.sh files/install_consul.sh
-	packer build -only amazon-ebs consul_base.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs consul_base.json
 	touch .built.aws_consul_base
 
 .built.aws_consul_client: consul_client.json files/auto-join-aws.hcl.tmpl files/update-consul-join-config files/client.hcl
-	packer build -only amazon-ebs consul_client.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs consul_client.json
 	touch .built.aws_consul_client
 
 .built.aws_consul_server: consul_server.json files/server.hcl
-	packer build -only amazon-ebs consul_server.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs consul_server.json
 	touch .built.aws_consul_server
 
 .built.aws_client_listing: client_listing.json files/install_node.sh services/listing.hcl
-	packer build -only amazon-ebs client_listing.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_listing.json
 	touch .built.aws_client_listing
 
 .built.aws_client_listing_noconnect: client_listing_noconnect.json files/install_node.sh services/listing-noconnect.hcl files/listing.service-noconnect
-	packer build -only amazon-ebs client_listing_noconnect.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_listing_noconnect.json
 	touch .built.aws_client_listing_noconnect
 
 .built.aws_client_listing_connect: client_listing_connect.json services/listing-connect.hcl files/listing.service-connect
-	packer build -only amazon-ebs client_listing_connect.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_listing_connect.json
 	touch .built.aws_client_listing_connect
 
 .built.aws_client_mongodb_noconnect: client_mongodb_noconnect.json files/install_mongodb.sh services/mongodb-noconnect.hcl files/mongod.conf-noconnect
-	packer build -only amazon-ebs client_mongodb_noconnect.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_mongodb_noconnect.json
 	touch .built.aws_client_mongodb_noconnect
 
 .built.aws_client_mongodb_connect: client_mongodb_connect.json services/mongodb-connect.hcl files/mongod.conf-connect
-	packer build -only amazon-ebs client_mongodb_connect.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_mongodb_connect.json
 	touch .built.aws_client_mongodb_connect
 
 .built.aws_client_product_connect: client_product_connect.json services/product-connect.hcl files/product.service-connect
-	packer build -only amazon-ebs client_product_connect.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_product_connect.json
 	touch .built.aws_client_product_connect
 
 .built.aws_client_product_noconnect: client_product_noconnect.json services/product-noconnect.hcl files/product.service-noconnect files/install_products.sh
-	packer build -only amazon-ebs client_product_noconnect.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_product_noconnect.json
 	touch .built.aws_client_product_noconnect
 
 .built.aws_client_webclient_connect: client_webclient_connect.json services/web_client-connect.hcl files/web_client.service-connect
-	packer build -only amazon-ebs client_webclient_connect.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_webclient_connect.json
 	touch .built.aws_client_webclient_connect
 
 .built.aws_client_webclient_noconnect: client_webclient_noconnect.json files/install_webclient.sh services/web_client-noconnect.hcl files/web_client.service-noconnect
-	packer build -only amazon-ebs client_webclient_noconnect.json
+	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_webclient_noconnect.json
 	touch .built.aws_client_webclient_noconnect
 
 $(ENCRYPT_CONFIG):
