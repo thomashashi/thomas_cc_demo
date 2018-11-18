@@ -6,17 +6,16 @@
         "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
         "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
         "aws_region": "{{ env `AWS_REGION` }}",
-        "dc_name": "{{ env `DC_NAME` }}",
         "role": "consul-client-listing",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-listing-noconnect",
+        "image_name": "gcp-ubuntu-consul-{{ user `type` }}-listing-noconnect",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-client",
+        "source_image": "gcp-ubuntu-consul-client",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -30,7 +29,7 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "name": "{{ user `dc_name` }}-aws-ubuntu-consul-client-*",
+                "name": "aws-ubuntu-consul-client-*",
                 "root-device-type": "ebs"
             },
             "owners": ["753646501470"],
@@ -38,7 +37,7 @@
         },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-listing-server-noconnect-{{timestamp}}",
+        "ami_name": "aws-ubuntu-listing-server-noconnect-{{timestamp}}",
         "tags": {
             "Name": "CC Demo Ubuntu Listing Server - No Consul Connect",
             "owner": "thomas@hashicorp.com",
