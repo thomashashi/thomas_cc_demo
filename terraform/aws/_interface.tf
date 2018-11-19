@@ -74,3 +74,8 @@ variable "ami_owner" {
     description = "AWS account which owns AMIs"
     default     = "753646501470" # hc-sc-demos-2018
 }
+
+variable "consul_lic" {
+    description = "License file content for Consul Enterprise"
+    default     = ""
+}

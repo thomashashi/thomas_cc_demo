@@ -9,6 +9,7 @@ resource aws_instance "consul" {
     associate_public_ip_address = true
     vpc_security_group_ids      = ["${aws_security_group.consul_server_sg.id}"]
     iam_instance_profile        = "${aws_iam_instance_profile.consul_server_iam_profile.name}"
+    user_data_base64		= "${base64encode(var.consul_lic)}"
     
     tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-consul-server"), map("role", "consul-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")))}"
 }

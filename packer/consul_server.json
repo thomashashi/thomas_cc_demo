@@ -57,12 +57,27 @@
         "destination": "/tmp/server.hcl"
       },
       {
+	"type": "file",
+	"source": "files/consul_license.py",
+	"destination": "/tmp/consul_license.py"
+      },
+      {
+	"type": "file",
+	"source": "files/consul_license.service",
+	"destination": "/tmp/consul_license.service"
+      },
+      {
         "type": "shell",
         "inline": [
           "sleep 15",
           "sudo mv /tmp/server.hcl /etc/consul/server.hcl",
+	  "sudo install -o root -g root -m 555 /tmp/consul_license.py /usr/local/bin/consul_license",
+	  "sudo install -o root -g root -m 444 /tmp/consul_license.service /lib/systemd/system/consul_license.service",
+	  "sudo rm -f /tmp/consul_license.*",
+	  "sudo systemctl daemon-reload",
           "sudo systemctl enable consul.service",
           "sudo systemctl enable consul_enable_acl.service",
+	  "sudo systemctl enable consul_license.service",
           "sudo rm -rf /opt/consul/*"
         ]
       }
