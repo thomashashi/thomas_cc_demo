@@ -69,3 +69,8 @@ variable "client_webclient_count" {
     description = "The number of webclients to create in each region"
     default     = "2"
 }
+
+variable "ami_owner" {
+    description = "AWS account which owns AMIs"
+    default     = "753646501470" # hc-sc-demos-2018
+}
