@@ -1,6 +1,6 @@
 ENCRYPT_CONFIG := files/encrypt.hcl
 
-AMI_OWNER=106962084910
+AMI_OWNER=753646501470
 
 DEFAULT:
 	@echo Run 'make gcp' or 'make aws' to build appropriate images
