@@ -21,6 +21,7 @@ output "mongo_servers" {
 
 resource aws_security_group "mongo_server_sg" {
     description = "Traffic allowed to Mongo servers"
+    vpc_id      = "${aws_vpc.prod.id}"
     tags        = "${var.hashi_tags}"
 }
 

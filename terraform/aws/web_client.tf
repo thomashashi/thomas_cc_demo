@@ -65,6 +65,7 @@ output "webclient-lb" {
 
 resource aws_security_group "lb_sg" {
     description = "Traffic allowed to Webclient LB"
+    vpc_id      = "${aws_vpc.prod.id}"
     tags        = "${var.hashi_tags}"
 }
 
@@ -99,6 +100,7 @@ resource aws_security_group_rule "lb_everything_out" {
 
 resource aws_security_group "webclient_sg" {
     description = "Traffic allowed to Webclient servers"
+    vpc_id      = "${aws_vpc.prod.id}"
     tags        = "${var.hashi_tags}"
 }
 

@@ -21,6 +21,7 @@ output "listing_api_servers" {
 
 resource aws_security_group "listing_server_sg" {
     description = "Traffic allowed to Product API servers"
+    vpc_id      = "${aws_vpc.prod.id}"
     tags        = "${var.hashi_tags}"
 }
 
