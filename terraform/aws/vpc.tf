@@ -1,5 +1,6 @@
 resource "aws_vpc" "prod" {
-    cidr_block = "${var.vpc_netblock}"
+    cidr_block           = "${var.vpc_netblock}"
+    enable_dns_hostnames = true
 
     tags = "${merge(map("Name", "prod"), var.hashi_tags)}"
 }
