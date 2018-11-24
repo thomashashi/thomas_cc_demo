@@ -5,7 +5,7 @@ resource aws_instance "webclient" {
     count			= "${var.client_webclient_count}"
     instance_type		= "${var.client_machine_type}"
     key_name			= "${var.ssh_key_name}"
-    subnet_id			= "${element(data.aws_subnet_ids.default.ids, count.index)}" 
+    subnet_id			= "${element(data.aws_subnet_ids.public.ids, count.index)}" 
     associate_public_ip_address = true
     vpc_security_group_ids      = ["${aws_security_group.webclient_sg.id}"]
     iam_instance_profile        = "${aws_iam_instance_profile.consul_client_iam_profile.name}"
@@ -21,7 +21,7 @@ resource "aws_lb" "webclient-lb" {
     name               = "${var.project_name}-lb"
     internal           = false
     load_balancer_type = "application"
-    subnets            = ["${data.aws_subnet_ids.default.ids}"]
+    subnets            = ["${data.aws_subnet_ids.public.ids}"]
     security_groups    = ["${aws_security_group.lb_sg.id}"]
 
     tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-lb"))}"
@@ -31,7 +31,7 @@ resource "aws_lb_target_group" "webclient" {
     name     = "${var.project_name}-lb-tg"
     port     = 8080
     protocol = "HTTP"
-    vpc_id   = "${data.aws_vpc.default.id}"
+    vpc_id   = "${data.aws_vpc.prod.id}"
 
     stickiness = {
 	type    = "lb_cookie"
@@ -83,7 +83,7 @@ resource aws_security_group_rule "lb_everything_in_internal" {
     protocol          = "all"
     from_port         = 0
     to_port           = 65535
-    cidr_blocks       = ["${data.aws_vpc.default.cidr_block}"]
+    cidr_blocks       = ["${data.aws_vpc.prod.cidr_block}"]
 }
 
 resource aws_security_group_rule "lb_everything_out" {
@@ -117,7 +117,7 @@ resource aws_security_group_rule "webclient_allow_everything_internal" {
     protocol          = "all"
     from_port         = 0
     to_port           = 65535
-    cidr_blocks       = ["${data.aws_vpc.default.cidr_block}"]
+    cidr_blocks       = ["${data.aws_vpc.prod.cidr_block}"]
 }
 
 resource aws_security_group_rule "webclient_allow_everything_out" {

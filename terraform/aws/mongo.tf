@@ -5,7 +5,7 @@ resource aws_instance "mongo" {
     count			= "${var.client_db_count}"
     instance_type		= "${var.client_machine_type}"
     key_name			= "${var.ssh_key_name}"
-    subnet_id			= "${element(data.aws_subnet_ids.default.ids, count.index)}" 
+    subnet_id			= "${element(data.aws_subnet_ids.public.ids, count.index)}" 
     associate_public_ip_address = true
     vpc_security_group_ids      = ["${aws_security_group.mongo_server_sg.id}"]
     iam_instance_profile        = "${aws_iam_instance_profile.consul_client_iam_profile.name}"
@@ -39,7 +39,7 @@ resource aws_security_group_rule "mongo_server_allow_everything_internal" {
     protocol          = "all"
     from_port         = 0
     to_port           = 65535
-    cidr_blocks       = ["${data.aws_vpc.default.cidr_block}"]
+    cidr_blocks       = ["${data.aws_vpc.prod.cidr_block}"]
 }
 
 resource aws_security_group_rule "mongo_server_allow_everything_out" {

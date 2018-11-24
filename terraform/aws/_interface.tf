@@ -79,3 +79,8 @@ variable "consul_lic" {
     description = "License file content for Consul Enterprise"
     default     = ""
 }
+
+variable "vpc_netblock" {
+    description = "The netblock for this deployment's VPC"
+    default     = "10.0.0.0/16"
+}

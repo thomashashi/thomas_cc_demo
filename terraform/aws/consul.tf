@@ -5,7 +5,7 @@ resource aws_instance "consul" {
     count			= "${var.consul_servers_count}"
     instance_type		= "${var.server_machine_type}"
     key_name			= "${var.ssh_key_name}"
-    subnet_id			= "${element(data.aws_subnet_ids.default.ids, count.index)}" 
+    subnet_id			= "${element(data.aws_subnet_ids.public.ids, count.index)}" 
     associate_public_ip_address = true
     vpc_security_group_ids      = ["${aws_security_group.consul_server_sg.id}"]
     iam_instance_profile        = "${aws_iam_instance_profile.consul_server_iam_profile.name}"
@@ -177,7 +177,7 @@ resource aws_security_group_rule "consul_server_allow_everything_internal" {
     protocol          = "all"
     from_port         = 0
     to_port           = 65535
-    cidr_blocks       = ["${data.aws_vpc.default.cidr_block}"]
+    cidr_blocks       = ["${data.aws_vpc.prod.cidr_block}"]
 }
 
 resource aws_security_group_rule "consul_server_allow_everything_out" {
