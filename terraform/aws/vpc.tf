@@ -5,7 +5,7 @@ resource "aws_vpc" "prod" {
 }
 
 output "vpc_id" {
-    value = "${aws_vpc.id}"
+    value = "${aws_vpc.prod.id}"
 }
 
 data "aws_availability_zones" "available" {}
