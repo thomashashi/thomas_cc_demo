@@ -21,7 +21,7 @@ resource "aws_lb" "webclient-lb" {
     name               = "${var.project_name}-lb"
     internal           = false
     load_balancer_type = "application"
-    subnets            = ["${data.aws_subnet_ids.public.ids}"]
+    subnets            = ["${aws_subnet.public.*.id}"]
     security_groups    = ["${aws_security_group.lb_sg.id}"]
 
     tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-lb"))}"
@@ -31,7 +31,7 @@ resource "aws_lb_target_group" "webclient" {
     name     = "${var.project_name}-lb-tg"
     port     = 8080
     protocol = "HTTP"
-    vpc_id   = "${data.aws_vpc.prod.id}"
+    vpc_id   = "${aws_vpc.prod.id}"
 
     stickiness = {
 	type    = "lb_cookie"
@@ -83,7 +83,7 @@ resource aws_security_group_rule "lb_everything_in_internal" {
     protocol          = "all"
     from_port         = 0
     to_port           = 65535
-    cidr_blocks       = ["${data.aws_vpc.prod.cidr_block}"]
+    cidr_blocks       = ["${aws_vpc.prod.cidr_block}"]
 }
 
 resource aws_security_group_rule "lb_everything_out" {
