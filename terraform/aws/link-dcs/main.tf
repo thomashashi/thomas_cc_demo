@@ -14,6 +14,7 @@ data "terraform_remote_state" "west" {
 
 resource "aws_vpc_peering_connection" "east_west" {
     peer_vpc_id = "${data.terraform_remote_state.west.vpc_id}"
+    peer_region = "us-west-2"
     vpc_id = "${data.terraform_remote_state.east.vpc_id}"
     tags = "${merge(map("Name", "prod-east-west-link"), var.hashi_tags)}"
 }
