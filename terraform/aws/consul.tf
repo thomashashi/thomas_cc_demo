@@ -215,7 +215,7 @@ resource "aws_lb_target_group" "consul" {
 }
 
 resource "aws_lb_target_group_attachment" "consul" {
-    count            = "${var.var.consul_servers_count}"
+    count            = "${var.consul_servers_count}"
     target_group_arn = "${aws_lb_target_group.consul.arn}"
     target_id        = "${element(aws_instance.consul.*.id, count.index)}"
 
