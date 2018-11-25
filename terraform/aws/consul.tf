@@ -18,6 +18,15 @@ output "consul_servers" {
     value = ["${aws_instance.consul.*.public_dns}"]
 }
 
+resource "aws_route53_record" "consul_a_records" {
+    count = "${var.consul_servers_count}"
+    zone_id = "${var.route53_zone_id}"
+    name = "consul${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
+    type = "A"
+    ttl = "30"
+    records = ["${aws_instance.consul.*[count.index].public_ip"]
+}
+
 # Allow Consul Servers to call ec2:DescribeTags for Cloud AutoJoin
 
 resource "aws_iam_instance_profile" "consul_server_iam_profile" {

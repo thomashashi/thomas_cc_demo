@@ -24,6 +24,9 @@ variable "consul_acl_dc" {
   description = "Consul ACL cluster name"
 }
 
+variable "route53_zone_id" {
+  description = "Route 53 zone into which to place hostnames"
+}
 
 # Optional
 
