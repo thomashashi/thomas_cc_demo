@@ -45,3 +45,19 @@ resource "aws_vpc_peering_connection_accepter" "west" {
 
     tags = "${merge(map("Name", "prod-east-west-link"), map("Side", "Acceptor"), var.hashi_tags)}"
 }
+
+# Add routes
+
+resource "aws_route" "east_to_west" {
+    provider = "aws.east"
+    route_table_id = "${data.terraform_remote_state.east.vpc_public_route_table_id}"
+    destination_cidr_block = "10.128.0.0/16"
+    vpc_peering_connection_id = "${aws_vpc_peering_connection.east.id}"
+}
+
+resource "aws_route" "west_to_east" {
+    provider = "aws.west"
+    route_table_id = "${data.terraform_remote_state.west.vpc_public_route_table_id}"
+    destination_cidr_block = "10.0.0.0/16"
+    vpc_peering_connection_id = "${aws_vpc_peering_connection_acceptor.west.id}"
+}
