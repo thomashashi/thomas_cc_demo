@@ -24,7 +24,7 @@ resource "aws_route53_record" "consul_a_records" {
     name = "consul${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
     type = "A"
     ttl = "30"
-    records = ["${aws_instance.consul.*[count.index].public_ip"]
+    records = ["${aws_instance.consul.*[count.index].public_ip}"]
 }
 
 # Allow Consul Servers to call ec2:DescribeTags for Cloud AutoJoin
