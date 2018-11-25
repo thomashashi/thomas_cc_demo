@@ -59,5 +59,5 @@ resource "aws_route" "west_to_east" {
     provider = "aws.west"
     route_table_id = "${data.terraform_remote_state.west.vpc_public_route_table_id}"
     destination_cidr_block = "10.0.0.0/16"
-    vpc_peering_connection_id = "${aws_vpc_peering_connection_acceptor.west.id}"
+    vpc_peering_connection_id = "${aws_vpc_peering_connection_accepter.west.id}"
 }
