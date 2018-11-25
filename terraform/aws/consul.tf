@@ -189,3 +189,84 @@ resource aws_security_group_rule "consul_server_allow_everything_out" {
     to_port           = 65535
     cidr_blocks       = ["0.0.0.0/0"]
 }
+
+# Public LB for consul servers
+
+resource "aws_lb" "consul_lb" {
+    name               = "${var.project_name}-consul-lb"
+    internal           = false
+    load_balancer_type = "application"
+    subnets            = ["${aws_subnet.public.*.id}"]
+    security_groups    = ["${aws_security_group.consul_lb_sg.id}"]
+
+    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-consul-lb"))}"
+}
+
+resource "aws_lb_target_group" "consul" {
+    name     = "${var.project_name}-consul-lb-tg"
+    port     = 8500
+    protocol = "HTTP"
+    vpc_id   = "${aws_vpc.prod.id}"
+
+    stickiness = {
+	type    = "lb_cookie"
+	enabled = false
+    }
+}
+
+resource "aws_lb_target_group_attachment" "consul" {
+    count            = "${var.var.consul_servers_count}"
+    target_group_arn = "${aws_lb_target_group.consul.arn}"
+    target_id        = "${element(aws_instance.consul.*.id, count.index)}"
+
+}
+
+resource "aws_lb_listener" "consul_lb" {
+    load_balancer_arn = "${aws_lb.consul_lb.arn}"
+    port              = 80
+    protocol          = "HTTP"
+
+    default_action = {
+	target_group_arn = "${aws_lb_target_group.consul.arn}"
+	type             = "forward"
+    }
+}
+
+output "consul-lb" {
+    value = "${aws_lb.consul_lb.dns_name}"
+}
+
+# Security groups for LB
+
+resource aws_security_group "consul_lb_sg" {
+    description = "Traffic allowed to Webclient LB"
+    vpc_id      = "${aws_vpc.prod.id}"
+    tags        = "${var.hashi_tags}"
+}
+
+resource aws_security_group_rule "consul_lb_80_from_world" {
+    security_group_id = "${aws_security_group.consul_lb_sg.id}"
+    type              = "ingress"
+    protocol          = "tcp"
+    from_port         = 80
+    to_port           = 80
+    cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource aws_security_group_rule "consul_lb_everything_in_internal" {
+    security_group_id = "${aws_security_group.consul_lb_sg.id}"
+    type              = "ingress"
+    protocol          = "all"
+    from_port         = 0
+    to_port           = 65535
+    cidr_blocks       = ["${var.internal_netblock}"]
+}
+
+resource aws_security_group_rule "consul_lb_everything_out" {
+    security_group_id = "${aws_security_group.consul_lb_sg.id}"
+    type              = "egress"
+    protocol          = "all"
+    from_port         = 0
+    to_port           = 65535
+    cidr_blocks       = ["0.0.0.0/0"]
+}
