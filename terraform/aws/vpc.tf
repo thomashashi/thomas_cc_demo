@@ -49,3 +49,7 @@ resource "aws_route_table_association" "public" {
 output "public_subnets" {
     value = "${aws_subnet.public.*.cidr_block}"
 }
+
+output "vpc_public_route_table_id" {
+    value = "${aws_route_table.public.id}"
+}
