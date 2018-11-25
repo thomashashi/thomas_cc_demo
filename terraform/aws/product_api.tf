@@ -21,7 +21,7 @@ resource "aws_route53_record" "product_a_records" {
     name = "product${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
     type = "A"
     ttl = "30"
-    records = ["${aws_instance.product_api.*.public_ip[count.index]}"]
+    records = ["${aws_instance.product-api.*.public_ip[count.index]}"]
 }
 
 output "product_api_servers" {
