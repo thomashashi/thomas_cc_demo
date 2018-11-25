@@ -249,6 +249,7 @@ resource "aws_route53_record" "consul_lb_a_record" {
     alias {
 	name = "${aws_lb.consul_lb.dns_name}"
 	zone_id = "${aws_lb.consul_lb.zone_id}"
+	evaluate_target_health = false
     }
 }
 
