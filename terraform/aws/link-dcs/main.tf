@@ -27,6 +27,7 @@ data "aws_caller_identity" "west" {
 }
 
 resource "aws_vpc_peering_connection" "east" {
+    provider = "aws.east"
     vpc_id = "${data.terraform_remote_state.east.vpc_id}"
     peer_vpc_id = "${data.terraform_remote_state.west.vpc_id}"
     peer_owner_id = "${data.aws_caller_identity.west.account_id}"
@@ -39,7 +40,7 @@ resource "aws_vpc_peering_connection" "east" {
 # Accepter's side of the connection.
 resource "aws_vpc_peering_connection_accepter" "west" {
     provider                  = "aws.west"
-    vpc_peering_connection_id = "${aws_vpc_peering_connection.west.id}"
+    vpc_peering_connection_id = "${aws_vpc_peering_connection.east.id}"
     auto_accept               = true
 
     tags = "${merge(map("Name", "prod-east-west-link"), map("Side", "Acceptor"), var.hashi_tags)}"
