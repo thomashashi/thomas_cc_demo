@@ -5,6 +5,19 @@ service {
   port = 8000
   tags = ["prod"]
 
+    connect = {
+	proxy = {
+	  config = {
+	    upstreams = [
+	      {
+		destination_name = "mongodb",
+		local_bind_port = 8001
+	      }
+	    ]
+	  }
+	}
+      }
+
   checks = [
     {
       id = "listing-tcp"

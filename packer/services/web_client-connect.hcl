@@ -2,7 +2,7 @@ service {
   name = "web_client"
   address = ""
   enable_tag_override = false
-  port = 80
+  port = 8080
   tags = ["prod"]
 
   checks = [
@@ -19,21 +19,18 @@ service {
       timeout = "1s"
       name = "client server /healthz"
       http =  "http://localhost:8080/healthz",
-      tls_skip_verify = true,
+      tls_skip_verify = true
     }
-  ] 
+  ]
 
-  connect = {
-    proxy = {
-      config = {
+  connect {
+    sidecar_service = {
+      proxy = {
         upstreams = [
           {
-            destination_name = "listing",
-            local_bind_port = 10002
-          },
-          {
             destination_name = "product"
-            local_bind_port  = 10001
+            local_bind_port = 10001
+            destination_type = "prepared_query"
           }
         ]
       }
