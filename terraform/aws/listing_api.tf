@@ -16,7 +16,16 @@ resource aws_instance "listing-api" {
 }
 
 output "listing_api_servers" {
-    value = ["${aws_instance.listing-api.*.public_dns}"]
+    value = ["${aws_route53_record.listing_a_records.*.fqdn}"]
+}
+
+resource "aws_route53_record" "listing_a_records" {
+    count = "${var.client_listing_count}"
+    zone_id = "${var.route53_zone_id}"
+    name = "listing${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
+    type = "A"
+    ttl = "30"
+    records = ["${aws_instance.listing-api.*.public_ip[count.index]}"]
 }
 
 # Security groups

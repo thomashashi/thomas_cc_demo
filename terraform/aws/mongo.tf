@@ -16,8 +16,17 @@ resource aws_instance "mongo" {
 
 }
 
+resource "aws_route53_record" "mongo_a_records" {
+    count = "${var.client_db_count}"
+    zone_id = "${var.route53_zone_id}"
+    name = "mongo${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
+    type = "A"
+    ttl = "30"
+    records = ["${aws_instance.mongo.*.public_ip[count.index]}"]
+}
+
 output "mongo_servers" {
-    value = ["${aws_instance.mongo.*.public_dns}"]
+    value = ["${aws_route53_record.mongo_a_records.*.fqdn}"]
 }
 
 # Security groups

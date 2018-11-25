@@ -15,8 +15,17 @@ resource aws_instance "webclient" {
     depends_on = ["aws_instance.consul"]
 }
 
+resource "aws_route53_record" "webclient_a_records" {
+    count = "${var.client_webclient_count}"
+    zone_id = "${var.route53_zone_id}"
+    name = "webclient${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
+    type = "A"
+    ttl = "30"
+    records = ["${aws_instance.webclient.*.public_ip[count.index]}"]
+}
+
 output "webclient_servers" {
-    value = ["${aws_instance.webclient.*.public_dns}"]
+    value = ["${aws_route53_record.webclient_a_records.*.fqdn}"]	
 }
 
 resource "aws_lb" "webclient-lb" {
@@ -59,8 +68,20 @@ resource "aws_lb_listener" "webclient-lb" {
     }
 }
 
+resource "aws_route53_record" "webclient_lb_a_record" {
+    zone_id = "${var.route53_zone_id}"
+    name = "${var.consul_dc}.reinventconsul.hashidemos.io"
+    type = "A"
+
+    alias {
+        name = "${aws_lb.webclient-lb.dns_name}"
+        zone_id = "${aws_lb.webclient-lb.zone_id}"
+        evaluate_target_health = false
+    }
+}
+
 output "webclient-lb" {
-    value = "${aws_lb.webclient-lb.dns_name}"
+    value = "${aws_route53_record.webclient_lb_a_record.fqdn}" 
 }
 
 # Security groups for LB
