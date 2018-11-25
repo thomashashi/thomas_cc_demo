@@ -15,7 +15,7 @@ resource aws_instance "consul" {
 }
 
 output "consul_servers" {
-    value = ["${aws_instance.consul.*.public_dns}"]
+    value = ["${aws_route53_record.consul_a_records.*.fqdn}"]
 }
 
 resource "aws_route53_record" "consul_a_records" {
@@ -241,8 +241,19 @@ resource "aws_lb_listener" "consul_lb" {
     }
 }
 
+resource "aws_route53_record" "consul_lb_a_record" {
+    zone_id = "${var.route53_zone_id}"
+    name = "consul.${var.consul_dc}.reinventconsul.hashidemos.io"
+    type = "A"
+
+    alias {
+	name = "${aws_lb.consul_lb.dns_name}"
+	zone_id = "${aws_lb.consul_lb.zone_id}"
+    }
+}
+
 output "consul-lb" {
-    value = "${aws_lb.consul_lb.dns_name}"
+    value = "${aws_route53_record.consul_lb_a_record.fqdn}"
 }
 
 # Security groups for LB
