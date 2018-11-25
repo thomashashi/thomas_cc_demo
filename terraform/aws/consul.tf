@@ -193,17 +193,17 @@ resource aws_security_group_rule "consul_server_allow_everything_out" {
 # Public LB for consul servers
 
 resource "aws_lb" "consul_lb" {
-    name               = "${var.project_name}-consul-lb"
+    name               = "${var.project_name}-c-lb"
     internal           = false
     load_balancer_type = "application"
     subnets            = ["${aws_subnet.public.*.id}"]
     security_groups    = ["${aws_security_group.consul_lb_sg.id}"]
 
-    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-consul-lb"))}"
+    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-c-lb"))}"
 }
 
 resource "aws_lb_target_group" "consul" {
-    name     = "${var.project_name}-consul-lb-tg"
+    name     = "${var.project_name}-c-lb-tg"
     port     = 8500
     protocol = "HTTP"
     vpc_id   = "${aws_vpc.prod.id}"
