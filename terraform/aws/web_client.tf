@@ -10,7 +10,7 @@ resource aws_instance "webclient" {
     vpc_security_group_ids      = ["${aws_security_group.webclient_sg.id}"]
     iam_instance_profile        = "${aws_iam_instance_profile.consul_client_iam_profile.name}"
     
-    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-webclient-server-${count.index}"), map("role", "webclient-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")))}"
+    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-webclient-server-${count.index}"), map("role", "webclient-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}))}"
 
     depends_on = ["aws_instance.consul"]
 }

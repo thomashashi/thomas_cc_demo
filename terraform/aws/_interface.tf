@@ -17,6 +17,15 @@ variable "ssh_key_name" {
   description = "Name of existing AWS ssh key"
 }
 
+variable "consul_dc" {
+  description = "Consul cluster DC name"
+}
+
+variable "consul_acl_dc" {
+  description = "Consul ACL cluster name"
+}
+
+
 # Optional
 
 # By default, we start in a "noconnect" mode --- this tells Terraform
