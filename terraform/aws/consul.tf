@@ -11,7 +11,7 @@ resource aws_instance "consul" {
     iam_instance_profile        = "${aws_iam_instance_profile.consul_server_iam_profile.name}"
     user_data_base64		= "${base64encode(var.consul_lic)}"
     
-    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-consul-server"), map("role", "consul-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}))}"
+    tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-consul-server"), map("role", "consul-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
 }
 
 output "consul_servers" {
