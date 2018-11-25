@@ -2,4 +2,5 @@ retry_join       = [
     "provider=aws tag_key=consul-cluster-name tag_value=@@CONSUL_CLUSTER_NAME@@"
 ]
 
-datacenter = "@@CONSUL_CLUSTER_DC@@"
+datacenter     = "@@CONSUL_CLUSTER_DC@@"
+acl_datacenter = "@@CONSUL_CLUSTER_ACL_DC@@"
