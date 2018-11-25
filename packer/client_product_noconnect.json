@@ -78,7 +78,6 @@
 	  "sudo systemctl daemon-reload",
 	  "sudo systemctl enable product.service",
           "sudo systemctl enable consul",
-          "sudo systemctl enable consul_enable_acl.service",
 	  "sudo rm -rf /opt/consul/*"
         ]
       }

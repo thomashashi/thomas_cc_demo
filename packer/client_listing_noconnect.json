@@ -77,7 +77,6 @@
           "sudo chown -R consul:consul /etc/consul",
 	  "sudo systemctl daemon-reload",
           "sudo systemctl enable consul",
-          "sudo systemctl enable consul_enable_acl.service",
 	  "sudo systemctl enable listing.service",
 	  "sudo rm -rf /opt/consul/*"
         ]
