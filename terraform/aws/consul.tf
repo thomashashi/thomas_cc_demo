@@ -178,7 +178,7 @@ resource aws_security_group_rule "consul_server_allow_everything_internal" {
     protocol          = "all"
     from_port         = 0
     to_port           = 65535
-    cidr_blocks       = ["${aws_vpc.prod.cidr_block}"]
+    cidr_blocks       = ["${var.internal_netblock}"]
 }
 
 resource aws_security_group_rule "consul_server_allow_everything_out" {

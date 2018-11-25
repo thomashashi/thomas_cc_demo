@@ -9,8 +9,7 @@ variable "hashi_tags" {
     default = {
         "TTL"     = ""
         "owner"   = ""
-        "project" = ""
-    }
+        "project" = "" }
 }
 
 variable "ssh_key_name" {
@@ -92,4 +91,9 @@ variable "consul_lic" {
 variable "vpc_netblock" {
     description = "The netblock for this deployment's VPC"
     default     = "10.0.0.0/16"
+}
+
+variable "internal_netblock" {
+    description = "Global netblock"
+    default     = "10.0.0.0/8"
 }
