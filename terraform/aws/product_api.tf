@@ -11,6 +11,8 @@ resource aws_instance "product-api" {
     iam_instance_profile        = "${aws_iam_instance_profile.consul_client_iam_profile.name}"
     
     tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-product-api-server-${count.index}"), map("role", "product-api-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")))}"
+
+    depends_on = ["aws_instance.consul"]
 }
 
 output "product_api_servers" {
