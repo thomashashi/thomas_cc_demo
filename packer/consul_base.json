@@ -9,7 +9,7 @@
 	"aws_region": "{{ env `AWS_REGION` }}",
         "role": "consul-base",
         "type": "{{ env `NODE_TYPE` }}",
-	"consul_version": "1.4.0"
+	"consul_version": "1.4.2"
     },
     "builders": [
       {
