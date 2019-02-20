@@ -21,7 +21,7 @@ output "consul_servers" {
 resource "aws_route53_record" "consul_a_records" {
     count = "${var.consul_servers_count}"
     zone_id = "${var.route53_zone_id}"
-    name = "consul${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
+    name = "consul${count.index}.${var.consul_dc}.${var.top_level_domain}"
     type = "A"
     ttl = "30"
     records = ["${aws_instance.consul.*.public_ip[count.index]}"]
@@ -243,7 +243,7 @@ resource "aws_lb_listener" "consul_lb" {
 
 resource "aws_route53_record" "consul_lb_a_record" {
     zone_id = "${var.route53_zone_id}"
-    name = "consul.${var.consul_dc}.reinventconsul.hashidemos.io"
+    name = "consul.${var.consul_dc}.${var.top_level_domain}"
     type = "A"
 
     alias {

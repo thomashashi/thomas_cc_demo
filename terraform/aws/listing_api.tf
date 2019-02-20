@@ -22,7 +22,7 @@ output "listing_api_servers" {
 resource "aws_route53_record" "listing_a_records" {
     count = "${var.client_listing_count}"
     zone_id = "${var.route53_zone_id}"
-    name = "listing${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
+    name = "listing${count.index}.${var.consul_dc}.${var.top_level_domain}"
     type = "A"
     ttl = "30"
     records = ["${aws_instance.listing-api.*.public_ip[count.index]}"]

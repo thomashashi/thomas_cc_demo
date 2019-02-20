@@ -18,7 +18,7 @@ resource aws_instance "product-api" {
 resource "aws_route53_record" "product_a_records" {
     count = "${var.client_product_count}"
     zone_id = "${var.route53_zone_id}"
-    name = "product${count.index}.${var.consul_dc}.reinventconsul.hashidemos.io"
+    name = "product${count.index}.${var.consul_dc}.${var.top_level_domain}"
     type = "A"
     ttl = "30"
     records = ["${aws_instance.product-api.*.public_ip[count.index]}"]

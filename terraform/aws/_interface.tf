@@ -28,6 +28,10 @@ variable "route53_zone_id" {
   description = "Route 53 zone into which to place hostnames"
 }
 
+variable "top_level_domain" {
+  description = "The top-level domain to put all Route53 records"
+}
+
 # Optional
 
 # By default, we start in a "noconnect" mode --- this tells Terraform
@@ -45,10 +49,10 @@ variable "server_machine_type" {
   default     = "t2.micro"
 }
 
-# Images currently only exist in us-east-1
+# Images currently only exist in us-west-2
 variable "aws_region" {
   description = "Region into which to deploy"
-  default     = "us-east-1"
+  default     = "us-west-2"
 }
 
 variable "client_machine_type" {
