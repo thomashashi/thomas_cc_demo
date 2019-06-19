@@ -7,76 +7,74 @@
         "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
         "aws_region": "{{ env `AWS_REGION` }}",
         "role": "consul-client-webclient",
-	"ami_owner": "{{ env `AMI_OWNER` }}",
+        "ami_owner": "{{ env `AMI_OWNER` }}",
         "type": "{{ env `NODE_TYPE` }}"
     },
-    "builders": [
-      {
-        "image_name": "gcp-ubuntu-consul-{{ user `type` }}-webclient-connect",
-        "type": "googlecompute",
-        "account_file": "{{ user `gcp_account_file` }}",
-        "project_id": "{{ user `gcp_project_id` }}",
-        "source_image": "gcp-ubuntu-consul-{{ user `type` }}-webclient-noconnect",
-        "ssh_username": "ubuntu",
-        "machine_type": "n1-standard-1",
-        "zone" : "{{ user `gcp_zone` }}",
-        "tags": ["{{ user `role` }}"]
-      },
-      {
-        "type": "amazon-ebs",
-        "access_key": "{{user `aws_access_key`}}",
-        "secret_key": "{{user `aws_secret_key`}}",
-        "region": "{{user `aws_region`}}",
-        "source_ami_filter": {
-            "filters": {
-                "virtualization-type": "hvm",
-                "name": "aws-ubuntu-webclient-noconnect-*",
-                "root-device-type": "ebs"
+    "builders": [{
+            "image_name": "gcp-ubuntu-consul-{{ user `type` }}-webclient-connect",
+            "type": "googlecompute",
+            "account_file": "{{ user `gcp_account_file` }}",
+            "project_id": "{{ user `gcp_project_id` }}",
+            "source_image": "gcp-ubuntu-consul-{{ user `type` }}-webclient-noconnect",
+            "ssh_username": "ubuntu",
+            "machine_type": "n1-standard-1",
+            "zone": "{{ user `gcp_zone` }}",
+            "tags": ["{{ user `role` }}"]
+        },
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "region": "{{user `aws_region`}}",
+            "source_ami_filter": {
+                "filters": {
+                    "virtualization-type": "hvm",
+                    "name": "aws-ubuntu-webclient-noconnect-*",
+                    "root-device-type": "ebs"
+                },
+                "owners": ["{{ user `ami_owner` }}"],
+                "most_recent": true
             },
-            "owners": ["{{ user `ami_owner` }}"],
-            "most_recent": true
-        },
-        "instance_type": "t2.micro",
-        "ssh_username": "ubuntu",
-        "ami_name": "aws-ubuntu-webclient-connect-{{timestamp}}",
-        "tags": {
-            "Name": "CC Demo Ubuntu Webclient - With Consul Connect",
-            "owner": "thomas@hashicorp.com",
-            "project": "CC Demo reInvent",
-            "Base_AMI_Name": "{{ .SourceAMIName }}",
-            "Base_AMI": "{{ .SourceAMI }}",
-            "role": "{{ user `role` }}"
-        },
-	"ami_groups": ["all"]
-      }
+            "instance_type": "t2.micro",
+            "ssh_username": "ubuntu",
+            "ami_name": "aws-ubuntu-webclient-connect-{{timestamp}}",
+            "tags": {
+                "Name": "CC Demo Ubuntu Webclient - With Consul Connect",
+                "owner": "thomas@hashicorp.com",
+                "project": "CC Demo reInvent",
+                "Base_AMI_Name": "{{ .SourceAMIName }}",
+                "Base_AMI": "{{ .SourceAMI }}",
+                "role": "{{ user `role` }}"
+            },
+            "ami_groups": ["all"]
+        }
     ],
-    "provisioners": [
-      {
-        "type": "file",
-        "source": "services/web_client-connect.hcl",
-        "destination": "/tmp/web_client.hcl"
-      },
-      {
-	"type": "file",
-	"source": "files/web_client.service-connect",
-	"destination": "/tmp/web_client.service"
-      },
-      {
-	"type": "file",
-	"source": "files/web_client_proxy.service",
-	"destination": "/tmp/web_client_proxy.service"
-      },
-      {
-        "type": "shell",
-        "inline": [
-          "sudo mv /tmp/web_client.hcl /etc/consul/web_client.hcl",
-	  "sudo mv /tmp/web_client.service /lib/systemd/system/web_client.service",
-	  "sudo mv /tmp/web_client_proxy.service /lib/systemd/system/web_client_proxy.service",
-	  "sudo systemctl daemon-reload",
-	  "sudo systemctl enable web_client.service",
-	  "sudo systemctl enable web_client_proxy.service",
-	  "sudo rm -rf /opt/consul/*"
-        ]
-      }
+    "provisioners": [{
+            "type": "file",
+            "source": "services/web_client-connect.hcl",
+            "destination": "/tmp/web_client.hcl"
+        },
+        {
+            "type": "file",
+            "source": "files/web_client.service-connect",
+            "destination": "/tmp/web_client.service"
+        },
+        {
+            "type": "file",
+            "source": "files/web_client_proxy.service",
+            "destination": "/tmp/web_client_proxy.service"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo mv /tmp/web_client.hcl /etc/consul/web_client.hcl",
+                "sudo mv /tmp/web_client.service /lib/systemd/system/web_client.service",
+                "sudo mv /tmp/web_client_proxy.service /lib/systemd/system/web_client_proxy.service",
+                "sudo systemctl daemon-reload",
+                "sudo systemctl enable web_client.service",
+                "sudo systemctl enable web_client_proxy.service",
+                "sudo rm -rf /opt/consul/*"
+            ]
+        }
     ]
-  }
+}
