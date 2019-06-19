@@ -6,18 +6,37 @@
 # of this in a single AWS account, you'll need to make these
 # distinct to keep the instances separate.
 
-project_name    = "thomas-cc-demo"
-hashi_tags      = { "TTL" = "48", owner = "thomas@hashicorp.com", "project" = "Thomas Consul Connect Demo" }
+project_name = "thomas-cc-demo"
 
-# Images currently only exist in "us-east-1"
-aws_region      = "us-east-1"
+hashi_tags = {
+  "TTL" = "48"
 
-# This is the name of an already existing SSH Keypair in AWS
+  "owner" = "thomas@hashicorp.com"
+
+  "project" = "Thomas Consul Connect Demo"
+}
+
+aws_region = "us-east-1"
+
+# Name of existing SSH Keypair in AWS Region
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
-ssh_key_name    = "thomas-yubikey"
+ssh_key_name = "thomas-yubikey"
 
-# By default, we start in a "noconnect" mode --- this tells Terraform
-# to deploy the version of this demo that has Consul but does not use
-# Consul Connect. But when you switch to "connect" mode, this will
-# cause Terraform to deploy the version which has Consul Connect enabled
-mode             = "noconnect"
+# This version of the demo must be used in "connect" mode
+mode = "connect"
+
+# zone ID for TLD
+route53_zone_id = "ZZZZZZZZZZZZZZ"
+
+# TLD to register nodes and lb in
+top_level_domain = "test.example.com"
+
+# if setting up a 2nd region, set to dc2
+consul_dc = "dc1"
+
+# in main set to value of consul_dc
+#   in 2nd region, set to value of main region's consul_dc
+consul_acl_dc = "dc1"
+
+# Consul Enterprise License Key
+consul_lic = "paste-consul-enterprise-license-string-here"
