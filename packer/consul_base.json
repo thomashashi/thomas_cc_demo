@@ -1,6 +1,5 @@
 {
     "variables": {
-        "owner_tag": "thomas@hashicorp.com",
         "gcp_account_file": "{{ env `GCP_ACCOUNT_FILE_JSON`}}",
         "gcp_project_id": "{{ env `GCP_PROJECT_ID` }}",
         "gcp_zone": "{{ env `GCP_ZONE` }}",
@@ -9,6 +8,7 @@
         "aws_region": "{{ env `AWS_REGION` }}",
         "role": "consul-base",
         "type": "{{ env `NODE_TYPE` }}",
+        "owner_tag": "thomas@hashicorp.com",
         "consul_version": "1.4.2"
     },
     "builders": [{

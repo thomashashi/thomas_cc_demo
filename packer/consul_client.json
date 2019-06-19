@@ -8,6 +8,7 @@
         "aws_region": "{{ env `AWS_REGION` }}",
         "role": "consul-client",
         "ami_owner": "{{ env `AMI_OWNER` }}",
+        "owner_tag": "thomas@hashicorp.com",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [{
@@ -40,7 +41,7 @@
             "ami_name": "aws-ubuntu-consul-client-{{timestamp}}",
             "tags": {
                 "Name": "CC Demo Ubuntu Consul Client",
-                "owner": "thomas@hashicorp.com",
+                "owner": "{{ user `owner_tag` }}",
                 "project": "CC Demo reInvent",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
                 "Base_AMI": "{{ .SourceAMI }}",
