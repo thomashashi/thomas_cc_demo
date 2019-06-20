@@ -6,8 +6,7 @@
         "tag_name": "consul-server",
         "type": "{{ env `NODE_TYPE` }}"
     },
-    "builders": [
-      {
+    "builders": [{
         "image_name": "gcp-ubuntu-consul-client",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
@@ -15,22 +14,20 @@
         "source_image": "gcp-ubuntu-consul-base",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
-        "zone" : "{{ user `gcp_zone` }}",
+        "zone": "{{ user `gcp_zone` }}",
         "tags": ["{{ user `tag_name` }}"]
-      }
-    ],
-    "provisioners": [
-      {
-        "type": "file",
-        "source": "files/client.hcl",
-        "destination": "/tmp/client.hcl"
-      },
-      {
-        "type": "shell",
-        "inline": [
-          "sudo mv /tmp/client.hcl /etc/consul/client.hcl",
-          "sudo rm -rf /opt/consul/*"
-        ]
-      }
+    }],
+    "provisioners": [{
+            "type": "file",
+            "source": "files/client.hcl",
+            "destination": "/tmp/client.hcl"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo mv /tmp/client.hcl /etc/consul/client.hcl",
+                "sudo rm -rf /opt/consul/*"
+            ]
+        }
     ]
-  }
+}
