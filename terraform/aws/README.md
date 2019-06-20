@@ -4,7 +4,7 @@
 
 This terraform code will spin up a simple three-tier web application that illustrates the differences in tiers using Consul for service discovery only (web_client to listings), and other tiers that use Service Discovery and Consul Connect (web_client to products).
 
-> Previous versions of this demo used seperate environments to demonstrate Service Discovery ("noconnect" mode) and Consul Connect ("connect" mode).  These two environments have been combined into one demo.  The instructions have changed accordingly.
+> Previous versions of this demo used seperate demo environments to demonstrate Service Discovery ("noconnect" mode) and Consul Connect ("connect" mode).  These two environments have been combined into one "hybrid" demo that is deployed when mode is set to "connect".  These instructions are for the new hybrid demo.
 
 For reference, the three tiers are:
 
@@ -16,7 +16,7 @@ For reference, the three tiers are:
 
 ### Architecture Diagrams
 
-from previous connect/non-connect variants:
+Diagrams of previous connect/non-connect environments:
 
 - [Architecture diagram for Non-connect version](../../diagrams/Consul-demo-No-connect.png).
 - [Architecture diagram for Connect version](../../diagrams/Consul-demo-Connect.png)
@@ -61,12 +61,12 @@ You will need:
  3. Edit the `terraform.auto.tfvars` file:
     1. Change the `project_name` to something which is: all lowercase letters/numbers/dashes and unique to you
     2. In the `hashi_tags` line change `owner` to be your email address.
-      - The combination of `project_name` and `owner` **must be unique within your AWS organization** --- they are used to set the Consul cluster membership when those instances start up
-    3. Change `ssh_key_name` to the name of the key identified in "Requirement 4"
+       - The combination of `project_name` and `owner` **must be unique within your AWS organization** --- they are used to set the Consul cluster membership when those instances start up
+    3. Set `ssh_key_name` to the name of the key identified in "Requirement 4"
     4. Set `top_level_domain` to a TLD in the Route53 Zone set below
-    5. Change `route53_zone_id` to the AWS Route53 Zone ID you want to use
+    5. Set `route53_zone_id` to the AWS Route53 Zone ID you want to use
     6. Set `consul_dc` to `dc1` if this is the first cluster
-      - if setting up a 2nd cluster in another region, set to `dc2`
+       - if setting up a 2nd cluster in another region, set to `dc2`
     7. Set `consul_acl_dc` to `dc1` if this is the 1st or alternate cluster
     8. Set `mode` to `connect`
     9. Set `consul_lic` to your Consul Enterprise License string
@@ -86,37 +86,42 @@ After the servers are deployed but *before starting a demo*:
 
 1. `terraform output consul_servers`
 2. `ssh ubuntu@<first ip returned>`
-    1. When asked `Are you sure you want to continue connecting (yes/no)?` answer `yes` and hit enter
 3. save the following text to `prepared.json`
-    1. if deploying to one datacenter use:
-      ```json
-      {
-        "Name": "product",
-        "Service": {
-          "Service": "product",
-          "Failover": {
-            "Datacenters": ["dc1"]
-          },
-          "OnlyPassing": true,
-          "Connect": true
-        }
-      }
-      ```
-    2. if deploying to two datacenters, use:
-      ```json
-      {
-        "Name": "product",
-        "Service": {
-          "Service": "product",
-          "Failover": {
-            "Datacenters": ["dc1", "dc2"]
-          },
-          "OnlyPassing": true,
-          "Connect": true
-        }
-      }
+
+    if deploying to one datacenter use:
+
+    ```json
+    {
+    "Name": "product",
+    "Service": {
+        "Service": "product",
+        "Failover": {
+        "Datacenters": ["dc1"]
+        },
+        "OnlyPassing": true,
+        "Connect": true
+    }
+    }
     ```
+
+    if deploying to two datacenters, use:
+
+    ```json
+    {
+    "Name": "product",
+    "Service": {
+        "Service": "product",
+        "Failover": {
+        "Datacenters": ["dc1", "dc2"]
+        },
+        "OnlyPassing": true,
+        "Connect": true
+    }
+    }
+    ```
+
 4. Run to following command to save the prepared query to consul:
+
     ```bash
     curl \
         --request POST \
@@ -126,36 +131,51 @@ After the servers are deployed but *before starting a demo*:
 
 ## Demo Script
 
-### Show the webclient UI
+### Open the web UIs
 
-- `terraform output webclient-lb`
-- Point a web browser at the value returned
+- Open the demo webclient UI
+  - `terraform output webclient-lb`
+  - Open value returned in a web browser
 
-### Connect to `webclient` service
+- Open the Consul UI
+  - get fqdn of Consul LB `terraform output consul-lb`
+  - open value returned in format `http://<consul_server_fqdn>:8500/ui`
 
-- `terraform output webclient_servers`
-- `ssh ubuntu@<first ip returned>`
-  - Answer `yes` when asked `Are you sure you want to continue connecting (yes/no)?`
+### "Webclient" Service using Service Discovery and Consul Connect
 
-- Part 1 - Show differences between Service Discovery & Consul Connect
+#### Describe Service Definition
+
+> Overview: webclient service calls two APIs (one via discovery, one via connect)
+
+- Connect to webclient server
+  - `terraform output webclient_servers`
+  - `ssh ubuntu@<first ip returned>`
 - `cat /lib/systemd/system/web_client.service`
+  - Service calls two APIs, one via `LISTING_URI`, and other via `PRODUCT_URI`
   - `Environment=LISTING_URI=http://listing.service.consul:8000`
-    - tells `web_client` how to talk to the `listing` service (service discovery)
+    - tells `web_client` how to talk to the `listing` service
+    - this is using service discovery
   - `Environment=PRODUCT_URI=http://localhost:10001`
-    - Connecting to something on `localhost` **not** connecting across the network
+    - Connect to something on `localhost` **not** connecting across the network
+    - this is using Consul Connect
 
-- Part 2 - Network traffic between `web_client` and `listing` services
-  - dump all packet data to `listing` service without any headers:
+#### Show network traffic for service using service discovery only
+
+- Network traffic between `web_client` and `listing` services
+  - dump all packet data to `listing` service:
     - `sudo tcpdump -A 'host listing.service.consul and port 8000 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
   - Switch to browser and reload the page a few times
   - Return to terminal - point out **packet data traversing the network in plaintext**
   - Hit _Cntl-C_ to exit `tcpdump`
-  - Summary: `web_client` is finding `listing` services dynamically, but nothing is protecting their traffic
+  - **Summary:** `web_client` is finding `listing` services dynamically, but nothing is protecting their traffic
 
-- Part 3A - Connection Config between `web_client` and `product` services
-  - review `web_client` consul config
+#### Describe Consul Connect Config
+
+- Show connection config between `web_client` and `product` services
+  - describe `web_client` consul config
     - `cat /etc/consul/web_client.hcl`
     - Point out this stanza:
+
       ```js
       connect {
         sidecar_service = {
@@ -171,65 +191,61 @@ After the servers are deployed but *before starting a demo*:
         }
       }
       ```
-  - The `web_client` service is configured for Consul Connect
-    - talks to `product` services via Consul Connect
-    - reaches them by connecting to `localhost` on port `10003`
-  - Summary: `web_client` is dynamically linking with the `product` services AND  un-encrypted traffic is _only_ traveling to a local system process
 
-- Part 3B - Network traffic between between `web_client` and `product` services
-  - Since its connecting though consul connect, we need to determine the actual hostname and port
-  - Query Consul DNS for `product` services info with command:
-    - `dig +short product.connect.consul srv`
-      - returns something like `1 1 20191 ip-10-0-3-63.node.dc1.consul.`
-      - The third number (`20191` in example) is _Consul Connect Proxy_ Port for an instance of the `listing` service
-      - The fourth item (`ip-10-0-3-63.node.dc1.consul."` in example) is the internal hostname for that Connect proxy
-  - Display packet data to `product` service without any headers:
-    - Option A - auto-capture hostname & port from `dig` output
-      - capture vars:
-        -`dig +short product.connect.consul srv > .rec && HN=$(awk 'NR==1{print $4}' .rec | sed s/\.$//) && HP=$(awk 'NR==1{print $3}' .rec)`
-      - run dig using captured vars:
-        - `sudo tcpdump -A "host $HN and port $HP and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)"`
-    - Option B - manually paste hostname & port
-      - Replace `<hostname>` and `<port>` with the associated items from last step
-      - `sudo tcpdump -A 'host <hostname> and port <port> and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
+  - The `web_client` service talks to `product` services via Consul Connect
+    - reaches it by connecting to `localhost` on port `10001`
+  - **Summary:** `web_client` is dynamically linking with the `product` services AND  un-encrypted traffic is _only_ traveling to a local system process
+
+#### Show network traffic for service using Consul Connect
+
+- Show network traffic between between `web_client` and `product` services
+  - We need to dump all packets to the `product` service, like we did above for the `listing` service
+  - Query Consul DNS to get hostname and port of `product` services
+    - Show Querying Consul DNS \:
+      - `dig +short product.connect.consul srv`
+    - Run modified command to capture the hostname & port as vars:
+      -`dig +short product.connect.consul srv > .rec && HN=$(awk 'NR==1{print $4}' .rec | sed s/\.$//) && HP=$(awk 'NR==1{print $3}' .rec)`
+    - dump all packet data to `product` service (using vars captured above):
+      - `sudo tcpdump -A "host $HN and port $HP and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)"`
   - Go to the browser window, reload a few times
   - Return to terminal - point out **all the traffic is TLS-encrypted gibberish**
   - Hit _Cntl-C_ to exit `tcpdump`
-  - Summary: `web_client` is connecting to `product` services via Consul Connect and all data is automatically TLS encrypted
+  - **Summary:** `web_client` is connecting to `product` services via Consul Connect and all data is automatically TLS encrypted
 
 - End of WebClient
   - `exit` to close the SSH connection
 
-### Connect to `listing` service
+### "Product" Service using Consul Connect
 
-- `terraform output listing_api_servers`
-- `ssh ubuntu@<first ip returned>`
-  - When asked `Are you sure you want to continue connecting (yes/no)?` answer `yes` and hit enter
-
-- **ERROR IN DOCS - LISTING_ADDR = 0.0.0.0 and fails if set to 127.0.0.1**
-  - `cat /lib/systemd/system/listing.service`
+- Connect to product server
+  - `terraform output product_api_servers`
+  - `ssh ubuntu@<first ip returned>`
+- Describe Service Definition
+  - `cat /lib/systemd/system/product.service`
   - Point out these lines
-    ```bash
-    Environment=LISTING_PORT=8000
-    Environment=LISTING_ADDR=127.0.0.1
-    ```
-  - This tells the `listing` service to _only_ listen on `localhost` port 8000
 
-- Review `listing` service consul config
-  - `cat /etc/consul/listing.hcl`
+    ```ini
+    Environment=PRODUCT_PORT=5000
+    Environment=PRODUCT_ADDR=127.0.0.1
+    ```
+
+  - This tells the `product` service to _only_ listen on `localhost` port 5000
+
+- Review consul config for `product` service
+  - `cat /etc/consul/product.hcl`
     - Look at the `connect=` stanza
     - This serves two purposes
-      - makes `listing` available over connect at port 8000
-      - allows `listing` service to connect to `mongodb` via Connect
+      - makes `product` available over connect at port 5000
+      - allows `product` service to connect to `mongodb` via Connect
 
-### Making the connection
+### Consul Connect Summary
 
- 1. Point out that all you did to change a standard Node application was to configure Consul Connect and  _tell the app to listen only on localhost_
-    1. `listing` knows _nothing_ about TLS
-    2. `listing` knows _nothing_ about mutual-TLS authentication
-    4. `listing` doesn't have to manage certificates, keys, CRLs, CA certs...
-    5. `listing` simply sees _simple, unencrypted traffic_ coming to it
- 2. Point out that by configuring `listing` to listen only on `localhost`, you've reduced the security boundary to individual server instances --- all network traffic is _encrypted_ **ERROR IN DOCS - localhost doesn't work - see line 209**
+ 1. Point out that all you did to change a standard application was to configure Consul Connect and  _tell the app to listen only on localhost_
+    1. `product` knows _nothing_ about TLS
+    2. `product` knows _nothing_ about mutual-TLS authentication
+    3. `product` doesn't have to manage certificates, keys, CRLs, CA certs...
+    4. `product` simply sees _simple, unencrypted traffic_ coming to it
+ 2. Point out that by configuring `product` to listen only on `localhost`, you've reduced the security boundary to individual server instances --- all network traffic is _encrypted_
  3. Point out that to connect `web_client` to its backend services, all you had to do was
     1. Enable Connect
     2. Tell `web_client` that its upstream services are reachable on localhost ports
@@ -242,40 +258,33 @@ After the servers are deployed but *before starting a demo*:
 
 ### Intentions
 
-- get fqdn of Consul LB `terraform output consul-lb`
-- Access the Consul UI `http://<consul_server_fqdn>:8500/ui`.
+- Intentions can be defined via CLI or the Consul Web UI
+  - If using the CLI, connect to `product` server
 
-Still on the `listing` server
+1. Config Consul Connect to deny all traffic by default
+    - `consul intention create -deny '*' '*'`
+    - **Show it cannot reach the APIs** by refreshing web browser
+2. Allow `web_client` to talk to `listing`
+    - `consul intention create -allow 'web_client' 'listing'`
+    - **Show it can now reach the `listing` API** by refreshing the web browser
+3. Allow `web_client` to talk to `product`
+   - `consul intention create -allow 'web_client' 'product'`
+   - **Show it can now reach the `product` API** by refreshing the web browser
+4. Delete ability of `web_client` to talk to `product`
+   - `consul intention delete 'web_client' 'product'`
+   - **Show product` API is unreachable again** by refreshing the web browser
+5. Describe "Scalability of Intentions"
+   - If you have 6 `web_client` instances, 17 `listing` instances and 23 `product` instances
+     - you'd have `6 * 17 + 6 * 23 = 240` endpoint combinations to define
+     - Those can be replaced with just _2_ intention definitions
+   - Intentions follow the service
+     - If you double the number of backends, you have to add _another_ 240 endpoint combinations
+     - With Intentions, you do _nothing_ because intentions follow the service
 
-- Config Consul Connect to deny all traffic by default
-  - `consul intention create -deny '*' '*'`
-  - Test connection by refreshing web browser
-    - Note it cannot reach the APIs
-- Allow `web_client` to talk to `listing`
-  - `consul intention create -allow 'web_client' 'listing'`
-  - Test connection by refreshing web browser
-    - Note it can now reach the `listing` API
-- Allow `web_client` to talk to `product`
-  - `consul intention create -allow 'web_client' 'product'`
-  - Test connection by refreshing web browser
-    - Note it can now reach the `product` API
-- Delete ability of `web_client` to talk to `product`
-  - `consul intention delete 'web_client' 'product'`
-  - Test connection by refreshing web browser
-    - Note `product` API is now unreachable again
-- Scalability of Intentions
-  - with 6 `web_client` instances, 17 `listing` instances and 23 `product` instances
-    - you'd have `6 * 17 + 6 * 23 = 240` endpoint combinations to define
-    - All replaced those with _2_ intention definitions
-  - Intentions follow the service
-    - If you double the number of backends, you have to add _another_ 240 endpoint combinations
-    - With Intentions, you do _nothing_ because intentions follow the service
+### Configuration K/V - displayed on webclient UI (under Configuration)
 
-### Configuration K/V - displayed in webclient UI
-
-- Show K/V items on the web UI (under Configurations) by setting KV on Consul
-- On Consul UI, create a KV named `product/` which will make it a directory
-  - inside that directory, create a key named `state`
-    - in the Consul UI, change the type (lower right corner) to HCL
-    - set the value to `production` and hit save
-  - Additional K/V's created under `product/` will display in the webclient UI
+- Populate K/V items on the webclient UI by adding KV entries in Consul
+- On Consul Web UI, create entry `product/` and save
+  - Any K/V's created under `product/` will display in the webclient UI
+  - In Consul Web UI select `product/`, hit create then specify key & value
+    - turn off `code` option or change type to HCL (lower right corner)
