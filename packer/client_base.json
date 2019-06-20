@@ -3,17 +3,16 @@
         "gcp_account_file": "{{ env `GCP_ACCOUNT_FILE_JSON`}}",
         "gcp_project_id": "{{ env `GCP_PROJECT_ID` }}",
         "gcp_zone": "{{ env `GCP_ZONE` }}",
-        "dc_name": "{{ env `DC_NAME` }}",
         "tag_name": "consul-server",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-client",
+        "image_name": "gcp-ubuntu-consul-client",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-base",
+        "source_image": "gcp-ubuntu-consul-base",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",

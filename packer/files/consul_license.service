@@ -1,0 +1,11 @@
+[Unit]
+Description=Apply a Consul Enterprise License
+Requires=consul.service
+After=consul.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/consul_license
+
+[Install]
+WantedBy=multi-user.target

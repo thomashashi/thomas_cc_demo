@@ -1,20 +1,37 @@
 # Required
 variable "project_name" {
-    type        = "string"
-    description = "Set this, resources are given a unique name based on this"
+  type        = "string"
+  description = "Set this, resources are given a unique name based on this"
 }
 
 variable "hashi_tags" {
-    type    = "map"
-    default = {
-        "TTL"     = ""
-        "owner"   = ""
-        "project" = ""
-    }
+  type = "map"
+
+  default = {
+    "TTL"     = ""
+    "owner"   = ""
+    "project" = ""
+  }
 }
 
 variable "ssh_key_name" {
   description = "Name of existing AWS ssh key"
+}
+
+variable "consul_dc" {
+  description = "Consul cluster DC name"
+}
+
+variable "consul_acl_dc" {
+  description = "Consul ACL cluster name"
+}
+
+variable "route53_zone_id" {
+  description = "Route 53 zone into which to place hostnames"
+}
+
+variable "top_level_domain" {
+  description = "The top-level domain to put all Route53 records"
 }
 
 # Optional
@@ -24,9 +41,9 @@ variable "ssh_key_name" {
 # Consul Connect. But when you switch to "connect" mode, this will
 # cause Terraform to deploy the version which has Consul Connect enabled
 variable "mode" {
-    type = "string"
-    description = "Set to 'noconnect' to not use Consul Connect, 'connect' to use Consul Connect"
-    default = "noconnect"
+  type        = "string"
+  description = "Set to 'noconnect' to not use Consul Connect, 'connect' to use Consul Connect"
+  default     = "noconnect"
 }
 
 variable "server_machine_type" {
@@ -34,10 +51,10 @@ variable "server_machine_type" {
   default     = "t2.micro"
 }
 
-# Images currently only exist in us-east-1
+# Images currently only exist in us-west-2
 variable "aws_region" {
   description = "Region into which to deploy"
-  default     = "us-east-1"
+  default     = "us-west-2"
 }
 
 variable "client_machine_type" {
@@ -66,6 +83,26 @@ variable "client_listing_count" {
 }
 
 variable "client_webclient_count" {
-    description = "The number of webclients to create in each region"
-    default     = "2"
+  description = "The number of webclients to create in each region"
+  default     = "2"
+}
+
+variable "ami_owner" {
+  description = "AWS account which owns AMIs"
+  default     = "753646501470"                # hc-sc-demos-2018
+}
+
+variable "consul_lic" {
+  description = "License file content for Consul Enterprise"
+  default     = ""
+}
+
+variable "vpc_netblock" {
+  description = "The netblock for this deployment's VPC"
+  default     = "10.0.0.0/16"
+}
+
+variable "internal_netblock" {
+  description = "Global netblock"
+  default     = "10.0.0.0/8"
 }

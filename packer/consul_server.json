@@ -3,20 +3,20 @@
         "gcp_account_file": "{{ env `GCP_ACCOUNT_FILE_JSON`}}",
         "gcp_project_id": "{{ env `GCP_PROJECT_ID` }}",
         "gcp_zone": "{{ env `GCP_ZONE` }}",
-        "dc_name": "{{ env `DC_NAME` }}",
         "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
         "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
         "aws_region": "{{ env `AWS_REGION` }}",
         "role": "consul-server",
+	"ami_owner": "{{ env `AMI_OWNER` }}",
         "type": "server"
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}",
+        "image_name": "gcp-ubuntu-consul-{{ user `type` }}",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-base",
+        "source_image": "gcp-ubuntu-consul-base",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -30,19 +30,19 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "name": "{{ user `dc_name` }}-aws-ubuntu-consul-client-*",
+                "name": "aws-ubuntu-consul-client-*",
                 "root-device-type": "ebs"
             },
-            "owners": ["753646501470"],
+            "owners": ["{{ user `ami_owner` }}"],
             "most_recent": true
         },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-consul-server-{{timestamp}}",
+        "ami_name": "aws-ubuntu-consul-server-{{timestamp}}",
         "tags": {
             "Name": "CC Demo Ubuntu Consul Server",
             "owner": "thomas@hashicorp.com",
-            "project": "CC Demo SE East Quarterly Training",
+            "project": "CC Demo reInvent",
             "Base_AMI_Name": "{{ .SourceAMIName }}",
             "Base_AMI": "{{ .SourceAMI }}",
             "role": "{{ user `role` }}"
@@ -57,12 +57,26 @@
         "destination": "/tmp/server.hcl"
       },
       {
+	"type": "file",
+	"source": "files/consul_license.py",
+	"destination": "/tmp/consul_license.py"
+      },
+      {
+	"type": "file",
+	"source": "files/consul_license.service",
+	"destination": "/tmp/consul_license.service"
+      },
+      {
         "type": "shell",
         "inline": [
           "sleep 15",
           "sudo mv /tmp/server.hcl /etc/consul/server.hcl",
+	  "sudo install -o root -g root -m 555 /tmp/consul_license.py /usr/local/bin/consul_license",
+	  "sudo install -o root -g root -m 444 /tmp/consul_license.service /lib/systemd/system/consul_license.service",
+	  "sudo rm -f /tmp/consul_license.*",
+	  "sudo systemctl daemon-reload",
           "sudo systemctl enable consul.service",
-          "sudo systemctl enable consul_enable_acl.service",
+	  "sudo systemctl enable consul_license.service",
           "sudo rm -rf /opt/consul/*"
         ]
       }

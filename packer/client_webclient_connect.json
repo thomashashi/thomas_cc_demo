@@ -6,17 +6,17 @@
         "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
         "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
         "aws_region": "{{ env `AWS_REGION` }}",
-        "dc_name": "{{ env `DC_NAME` }}",
         "role": "consul-client-webclient",
+	"ami_owner": "{{ env `AMI_OWNER` }}",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [
       {
-        "image_name": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-webclient-connect",
+        "image_name": "gcp-ubuntu-consul-{{ user `type` }}-webclient-connect",
         "type": "googlecompute",
         "account_file": "{{ user `gcp_account_file` }}",
         "project_id": "{{ user `gcp_project_id` }}",
-        "source_image": "{{ user `dc_name` }}-gcp-ubuntu-consul-{{ user `type` }}-webclient-noconnect",
+        "source_image": "gcp-ubuntu-consul-{{ user `type` }}-webclient-noconnect",
         "ssh_username": "ubuntu",
         "machine_type": "n1-standard-1",
         "zone" : "{{ user `gcp_zone` }}",
@@ -30,19 +30,19 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "name": "{{ user `dc_name` }}-aws-ubuntu-webclient-noconnect-*",
+                "name": "aws-ubuntu-webclient-noconnect-*",
                 "root-device-type": "ebs"
             },
-            "owners": ["753646501470"],
+            "owners": ["{{ user `ami_owner` }}"],
             "most_recent": true
         },
         "instance_type": "t2.micro",
         "ssh_username": "ubuntu",
-        "ami_name": "{{ user `dc_name` }}-aws-ubuntu-webclient-connect-{{timestamp}}",
+        "ami_name": "aws-ubuntu-webclient-connect-{{timestamp}}",
         "tags": {
             "Name": "CC Demo Ubuntu Webclient - With Consul Connect",
             "owner": "thomas@hashicorp.com",
-            "project": "CC Demo SE East Quarterly Training",
+            "project": "CC Demo reInvent",
             "Base_AMI_Name": "{{ .SourceAMIName }}",
             "Base_AMI": "{{ .SourceAMI }}",
             "role": "{{ user `role` }}"
@@ -62,12 +62,19 @@
 	"destination": "/tmp/web_client.service"
       },
       {
+	"type": "file",
+	"source": "files/web_client_proxy.service",
+	"destination": "/tmp/web_client_proxy.service"
+      },
+      {
         "type": "shell",
         "inline": [
           "sudo mv /tmp/web_client.hcl /etc/consul/web_client.hcl",
 	  "sudo mv /tmp/web_client.service /lib/systemd/system/web_client.service",
+	  "sudo mv /tmp/web_client_proxy.service /lib/systemd/system/web_client_proxy.service",
 	  "sudo systemctl daemon-reload",
 	  "sudo systemctl enable web_client.service",
+	  "sudo systemctl enable web_client_proxy.service",
 	  "sudo rm -rf /opt/consul/*"
         ]
       }
