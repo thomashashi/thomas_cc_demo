@@ -1,7 +1,17 @@
 # Deploy a Product API server
 
+data "aws_ami" "product-api" {
+  most_recent = true
+  owners      = ["${var.ami_owner}"]
+
+  filter {
+    name   = "name"
+    values = ["cc-demo-product-*"]
+  }
+}
+
 resource aws_instance "product-api" {
-  ami                         = "${var.mode == "connect" ? data.aws_ami.product-api-connect.id : data.aws_ami.product-api-noconnect.id}"
+  ami                         = "${data.aws_ami.product-api.id}"
   count                       = "${var.client_product_count}"
   instance_type               = "${var.client_machine_type}"
   key_name                    = "${var.ssh_key_name}"

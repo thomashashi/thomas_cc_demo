@@ -1,4 +1,13 @@
 # Deploy a Consul Cluster
+data "aws_ami" "consul" {
+  most_recent = true
+  owners      = ["${var.ami_owner}"]
+
+  filter {
+    name   = "name"
+    values = ["cc-demo-consul-server-*"]
+  }
+}
 
 resource aws_instance "consul" {
   ami                         = "${data.aws_ami.consul.id}"
