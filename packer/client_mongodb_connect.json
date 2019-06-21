@@ -12,11 +12,11 @@
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [{
-            "image_name": "gcp-ubuntu-consul-{{ user `type` }}-mongodb",
+            "image_name": "cc-demo-consul-{{ user `type` }}-mongodb",
             "type": "googlecompute",
             "account_file": "{{ user `gcp_account_file` }}",
             "project_id": "{{ user `gcp_project_id` }}",
-            "source_image": "gcp-ubuntu-consul-client",
+            "source_image": "cc-demo-consul-client",
             "ssh_username": "ubuntu",
             "machine_type": "n1-standard-1",
             "zone": "{{ user `gcp_zone` }}",
@@ -30,7 +30,7 @@
             "source_ami_filter": {
                 "filters": {
                     "virtualization-type": "hvm",
-                    "name": "aws-ubuntu-consul-client-*",
+                    "name": "cc-demo-consul-client-*",
                     "root-device-type": "ebs"
                 },
                 "owners": ["{{ user `ami_owner` }}"],
@@ -38,7 +38,7 @@
             },
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
-            "ami_name": "aws-ubuntu-mongodb-{{timestamp}}",
+            "ami_name": "cc-demo-mongodb-{{timestamp}}",
             "tags": {
                 "Name": "CC Demo Ubuntu MongoDB Server",
                 "owner": "{{ user `owner_tag` }}",
