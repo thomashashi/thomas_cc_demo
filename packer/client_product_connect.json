@@ -12,11 +12,11 @@
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [{
-            "image_name": "gcp-ubuntu-consul-{{ user `type` }}-product-connect",
+            "image_name": "gcp-ubuntu-consul-{{ user `type` }}-product",
             "type": "googlecompute",
             "account_file": "{{ user `gcp_account_file` }}",
             "project_id": "{{ user `gcp_project_id` }}",
-            "source_image": "gcp-ubuntu-consul-{{ user `type` }}-product-noconnect",
+            "source_image": "gcp-ubuntu-consul-client",
             "ssh_username": "ubuntu",
             "machine_type": "n1-standard-1",
             "zone": "{{ user `gcp_zone` }}",
@@ -30,7 +30,7 @@
             "source_ami_filter": {
                 "filters": {
                     "virtualization-type": "hvm",
-                    "name": "aws-ubuntu-product-noconnect-*",
+                    "name": "aws-ubuntu-consul-client-*",
                     "root-device-type": "ebs"
                 },
                 "owners": ["{{ user `ami_owner` }}"],
@@ -38,9 +38,9 @@
             },
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
-            "ami_name": "aws-ubuntu-product-connect-{{timestamp}}",
+            "ami_name": "aws-ubuntu-product-{{timestamp}}",
             "tags": {
-                "Name": "CC Demo Ubuntu Product Server - With Consul Connect",
+                "Name": "CC Demo Ubuntu Product Server",
                 "owner": "{{ user `owner_tag` }}",
                 "project": "CC Demo reInvent",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
@@ -51,6 +51,11 @@
         }
     ],
     "provisioners": [{
+            "type": "file",
+            "source": "files/install_products.sh",
+            "destination": "/tmp/install_products.sh"
+        },
+        {
             "type": "file",
             "source": "services/product-connect.hcl",
             "destination": "/tmp/product.hcl"
@@ -63,10 +68,15 @@
         {
             "type": "shell",
             "inline": [
+                "sudo chmod a+x /tmp/install_products.sh",
+                "sudo /tmp/install_products.sh",
+                "sudo rm -f /tmp/install_products.sh",
                 "sudo mv /tmp/product.hcl /etc/consul/product.hcl",
                 "sudo mv /tmp/product.service /lib/systemd/system/product.service",
+                "sudo chown -R consul:consul /etc/consul",
                 "sudo systemctl daemon-reload",
                 "sudo systemctl enable product.service",
+                "sudo systemctl enable consul",
                 "sudo rm -rf /opt/consul/*"
             ]
         }

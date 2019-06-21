@@ -12,7 +12,7 @@
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [{
-            "image_name": "gcp-ubuntu-consul-{{ user `type` }}-listing-noconnect",
+            "image_name": "gcp-ubuntu-consul-{{ user `type` }}-listing",
             "type": "googlecompute",
             "account_file": "{{ user `gcp_account_file` }}",
             "project_id": "{{ user `gcp_project_id` }}",
@@ -38,9 +38,9 @@
             },
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
-            "ami_name": "aws-ubuntu-listing-server-noconnect-{{timestamp}}",
+            "ami_name": "aws-ubuntu-listing-server-{{timestamp}}",
             "tags": {
-                "Name": "CC Demo Ubuntu Listing Server - No Consul Connect",
+                "Name": "CC Demo Ubuntu Listing Server",
                 "owner": "{{ user `owner_tag` }}",
                 "project": "CC Demo reInvent",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
