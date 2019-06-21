@@ -6,13 +6,13 @@
         "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
         "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
         "aws_region": "{{ env `AWS_REGION` }}",
-        "role": "consul-client-webclient",
+        "role": "consul-client-product",
         "ami_owner": "{{ env `AMI_OWNER` }}",
         "owner_tag": "thomas@hashicorp.com",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [{
-            "image_name": "cc-demo-consul-{{ user `type` }}-webclient",
+            "image_name": "cc-demo-consul-{{ user `type` }}-product",
             "type": "googlecompute",
             "account_file": "{{ user `gcp_account_file` }}",
             "project_id": "{{ user `gcp_project_id` }}",
@@ -38,9 +38,9 @@
             },
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
-            "ami_name": "cc-demo-webclient-{{timestamp}}",
+            "ami_name": "cc-demo-product-{{timestamp}}",
             "tags": {
-                "Name": "CC Demo Ubuntu Webclient",
+                "Name": "CC Demo Ubuntu Product Server",
                 "owner": "{{ user `owner_tag` }}",
                 "project": "CC Demo reInvent",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
@@ -52,38 +52,31 @@
     ],
     "provisioners": [{
             "type": "file",
-            "source": "files/install_webclient.sh",
-            "destination": "/tmp/install_webclient.sh"
+            "source": "files/install_products.sh",
+            "destination": "/tmp/install_products.sh"
         },
         {
             "type": "file",
-            "source": "services/web_client-connect.hcl",
-            "destination": "/tmp/web_client.hcl"
+            "source": "services/product.hcl",
+            "destination": "/tmp/product.hcl"
         },
         {
             "type": "file",
-            "source": "files/web_client.service-connect",
-            "destination": "/tmp/web_client.service"
-        },
-        {
-            "type": "file",
-            "source": "files/web_client_proxy.service",
-            "destination": "/tmp/web_client_proxy.service"
+            "source": "files/product.service",
+            "destination": "/tmp/product.service"
         },
         {
             "type": "shell",
             "inline": [
-                "sudo chmod a+x /tmp/install_webclient.sh",
-                "sudo /tmp/install_webclient.sh",
-                "sudo rm -f /tmp/install_webclient.sh",
-                "sudo mv /tmp/web_client.hcl /etc/consul/web_client.hcl",
-                "sudo mv /tmp/web_client.service /lib/systemd/system/web_client.service",
-                "sudo mv /tmp/web_client_proxy.service /lib/systemd/system/web_client_proxy.service",
+                "sudo chmod a+x /tmp/install_products.sh",
+                "sudo /tmp/install_products.sh",
+                "sudo rm -f /tmp/install_products.sh",
+                "sudo mv /tmp/product.hcl /etc/consul/product.hcl",
+                "sudo mv /tmp/product.service /lib/systemd/system/product.service",
                 "sudo chown -R consul:consul /etc/consul",
                 "sudo systemctl daemon-reload",
+                "sudo systemctl enable product.service",
                 "sudo systemctl enable consul",
-                "sudo systemctl enable web_client.service",
-                "sudo systemctl enable web_client_proxy.service",
                 "sudo rm -rf /opt/consul/*"
             ]
         }

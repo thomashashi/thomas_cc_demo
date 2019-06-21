@@ -58,12 +58,12 @@
         },
         {
             "type": "file",
-            "source": "services/mongodb-connect.hcl",
+            "source": "services/mongodb.hcl",
             "destination": "/tmp/mongodb.hcl"
         },
         {
             "type": "file",
-            "source": "files/mongod.conf-connect",
+            "source": "files/mongod.conf",
             "destination": "/tmp/mongod.conf"
         },
         {

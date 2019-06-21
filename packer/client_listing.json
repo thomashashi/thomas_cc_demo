@@ -57,12 +57,12 @@
         },
         {
             "type": "file",
-            "source": "services/listing-noconnect.hcl",
+            "source": "services/listing.hcl",
             "destination": "/tmp/listing.hcl"
         },
         {
             "type": "file",
-            "source": "files/listing.service-noconnect",
+            "source": "files/listing.service",
             "destination": "/tmp/listing.service"
         },
         {
