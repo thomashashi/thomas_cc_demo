@@ -6,21 +6,21 @@
         "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
         "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
         "aws_region": "{{ env `AWS_REGION` }}",
-        "role": "consul-client",
+        "role": "consul-client-webclient",
         "ami_owner": "{{ env `AMI_OWNER` }}",
         "owner_tag": "thomas@hashicorp.com",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [{
-            "image_name": "cc-demo-consul-client",
+            "image_name": "gcp-ubuntu-consul-{{ user `type` }}-webclient-noconnect",
             "type": "googlecompute",
             "account_file": "{{ user `gcp_account_file` }}",
             "project_id": "{{ user `gcp_project_id` }}",
-            "source_image": "cc-demo-consul-base",
+            "source_image": "gcp-ubuntu-consul-client",
             "ssh_username": "ubuntu",
             "machine_type": "n1-standard-1",
             "zone": "{{ user `gcp_zone` }}",
-            "tags": ["{{ user `client` }}"]
+            "tags": ["{{ user `role` }}"]
         },
         {
             "type": "amazon-ebs",
@@ -30,7 +30,7 @@
             "source_ami_filter": {
                 "filters": {
                     "virtualization-type": "hvm",
-                    "name": "cc-demo-consul-base-*",
+                    "name": "aws-ubuntu-consul-client-*",
                     "root-device-type": "ebs"
                 },
                 "owners": ["{{ user `ami_owner` }}"],
@@ -38,9 +38,9 @@
             },
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
-            "ami_name": "cc-demo-consul-client-{{timestamp}}",
+            "ami_name": "aws-ubuntu-webclient-noconnect-{{timestamp}}",
             "tags": {
-                "Name": "CC Demo Ubuntu Consul Client",
+                "Name": "CC Demo Ubuntu Webclient - No Consul Connect",
                 "owner": "{{ user `owner_tag` }}",
                 "project": "CC Demo reInvent",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
@@ -52,14 +52,31 @@
     ],
     "provisioners": [{
             "type": "file",
-            "source": "files/client.hcl",
-            "destination": "/tmp/client.hcl"
+            "source": "files/install_webclient.sh",
+            "destination": "/tmp/install_webclient.sh"
+        },
+        {
+            "type": "file",
+            "source": "services/web_client-noconnect.hcl",
+            "destination": "/tmp/web_client.hcl"
+        },
+        {
+            "type": "file",
+            "source": "files/web_client.service-noconnect",
+            "destination": "/tmp/web_client.service"
         },
         {
             "type": "shell",
             "inline": [
-                "sudo mv /tmp/client.hcl /etc/consul/client.hcl",
-                "sudo rm -f /tmp/client.hcl",
+                "sudo chmod a+x /tmp/install_webclient.sh",
+                "sudo /tmp/install_webclient.sh",
+                "sudo rm -f /tmp/install_webclient.sh",
+                "sudo mv /tmp/web_client.hcl /etc/consul/web_client.hcl",
+                "sudo mv /tmp/web_client.service /lib/systemd/system/web_client.service",
+                "sudo chown -R consul:consul /etc/consul",
+                "sudo systemctl daemon-reload",
+                "sudo systemctl enable consul",
+                "sudo systemctl enable web_client.service",
                 "sudo rm -rf /opt/consul/*"
             ]
         }

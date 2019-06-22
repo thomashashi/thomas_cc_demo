@@ -6,21 +6,21 @@
         "aws_access_key": "{{ env `AWS_ACCESS_KEY` }}",
         "aws_secret_key": "{{ env `AWS_SECRET_KEY` }}",
         "aws_region": "{{ env `AWS_REGION` }}",
-        "role": "consul-client",
+        "role": "consul-client-listing",
         "ami_owner": "{{ env `AMI_OWNER` }}",
         "owner_tag": "thomas@hashicorp.com",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [{
-            "image_name": "cc-demo-consul-client",
+            "image_name": "gcp-ubuntu-consul-{{ user `type` }}-mongodb-connect",
             "type": "googlecompute",
             "account_file": "{{ user `gcp_account_file` }}",
             "project_id": "{{ user `gcp_project_id` }}",
-            "source_image": "cc-demo-consul-base",
+            "source_image": "gcp-ubuntu-consul-{{ user `type` }}-mongodb-noconnect",
             "ssh_username": "ubuntu",
             "machine_type": "n1-standard-1",
             "zone": "{{ user `gcp_zone` }}",
-            "tags": ["{{ user `client` }}"]
+            "tags": ["{{ user `role` }}"]
         },
         {
             "type": "amazon-ebs",
@@ -30,7 +30,7 @@
             "source_ami_filter": {
                 "filters": {
                     "virtualization-type": "hvm",
-                    "name": "cc-demo-consul-base-*",
+                    "name": "aws-ubuntu-mongodb-noconnect-*",
                     "root-device-type": "ebs"
                 },
                 "owners": ["{{ user `ami_owner` }}"],
@@ -38,9 +38,9 @@
             },
             "instance_type": "t2.micro",
             "ssh_username": "ubuntu",
-            "ami_name": "cc-demo-consul-client-{{timestamp}}",
+            "ami_name": "aws-ubuntu-mongodb-connect-{{timestamp}}",
             "tags": {
-                "Name": "CC Demo Ubuntu Consul Client",
+                "Name": "CC Demo Ubuntu MongoDB Server - With Connect",
                 "owner": "{{ user `owner_tag` }}",
                 "project": "CC Demo reInvent",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
@@ -52,14 +52,19 @@
     ],
     "provisioners": [{
             "type": "file",
-            "source": "files/client.hcl",
-            "destination": "/tmp/client.hcl"
+            "source": "services/mongodb-connect.hcl",
+            "destination": "/tmp/mongodb.hcl"
+        },
+        {
+            "type": "file",
+            "source": "files/mongod.conf-connect",
+            "destination": "/tmp/mongod.conf"
         },
         {
             "type": "shell",
             "inline": [
-                "sudo mv /tmp/client.hcl /etc/consul/client.hcl",
-                "sudo rm -f /tmp/client.hcl",
+                "sudo mv /tmp/mongodb.hcl /etc/consul/",
+                "sudo mv /tmp/mongod.conf /etc/mongod.conf",
                 "sudo rm -rf /opt/consul/*"
             ]
         }

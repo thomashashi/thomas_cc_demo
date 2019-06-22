@@ -1,7 +1,17 @@
 # Deploy a MongoDB Server
 
+data "aws_ami" "mongo" {
+  most_recent = true
+  owners      = ["${var.ami_owner}"]
+
+  filter {
+    name   = "name"
+    values = ["cc-demo-mongodb-*"]
+  }
+}
+
 resource aws_instance "mongo" {
-  ami                         = "${var.mode == "connect" ? data.aws_ami.mongo-connect.id : data.aws_ami.mongo-noconnect.id}"
+  ami                         = "${data.aws_ami.mongo.id}"
   count                       = "${var.client_db_count}"
   instance_type               = "${var.client_machine_type}"
   key_name                    = "${var.ssh_key_name}"
