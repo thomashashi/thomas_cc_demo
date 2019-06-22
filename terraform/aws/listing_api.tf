@@ -1,7 +1,17 @@
 # Deploy a Listing API server
 
+data "aws_ami" "listing-api" {
+  most_recent = true
+  owners      = ["${var.ami_owner}"]
+
+  filter {
+    name   = "name"
+    values = ["cc-demo-listing-server-*"]
+  }
+}
+
 resource aws_instance "listing-api" {
-  ami                         = "${data.aws_ami.listing-api-noconnect.id}"
+  ami                         = "${data.aws_ami.listing-api.id}"
   count                       = "${var.client_listing_count}"
   instance_type               = "${var.client_machine_type}"
   key_name                    = "${var.ssh_key_name}"

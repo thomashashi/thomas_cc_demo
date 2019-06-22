@@ -1,7 +1,17 @@
 # Deploy a Webclient server
 
+data "aws_ami" "webclient" {
+  most_recent = true
+  owners      = ["${var.ami_owner}"]
+
+  filter {
+    name   = "name"
+    values = ["cc-demo-webclient-*"]
+  }
+}
+
 resource aws_instance "webclient" {
-  ami                         = "${var.mode == "connect" ? data.aws_ami.webclient-connect.id : data.aws_ami.webclient-noconnect.id}"
+  ami                         = "${data.aws_ami.webclient.id}"
   count                       = "${var.client_webclient_count}"
   instance_type               = "${var.client_machine_type}"
   key_name                    = "${var.ssh_key_name}"
