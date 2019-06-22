@@ -22,9 +22,6 @@ aws_region = "us-east-1"
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
 ssh_key_name = "thomas-yubikey"
 
-# This version of the demo must be used in "connect" mode
-mode = "connect"
-
 # zone ID for TLD
 route53_zone_id = "ZZZZZZZZZZZZZZ"
 
