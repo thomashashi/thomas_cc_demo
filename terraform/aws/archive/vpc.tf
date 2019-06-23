@@ -5,7 +5,15 @@ resource "aws_vpc" "prod" {
   tags = "${merge(map("Name", "prod"), var.hashi_tags)}"
 }
 
+output "vpc_id" {
+  value = "${aws_vpc.prod.id}"
+}
+
 data "aws_availability_zones" "available" {}
+
+# Gateways
+
+## Public
 
 resource "aws_internet_gateway" "public" {
   vpc_id = "${aws_vpc.prod.id}"
@@ -37,4 +45,12 @@ resource "aws_route_table_association" "public" {
 
   subnet_id      = "${element(aws_subnet.public.*.id, count.index)}"
   route_table_id = "${aws_route_table.public.id}"
+}
+
+output "public_subnets" {
+  value = "${aws_subnet.public.*.cidr_block}"
+}
+
+output "vpc_public_route_table_id" {
+  value = "${aws_route_table.public.id}"
 }
