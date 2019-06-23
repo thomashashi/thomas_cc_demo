@@ -4,7 +4,7 @@
 
 This terraform code will spin up a simple three-tier web application that illustrates the differences in tiers using Consul for service discovery only (web_client to listings), and other tiers that use Service Discovery and Consul Connect (web_client to products).
 
-> Previous versions of this demo used seperate demo environments to demonstrate Service Discovery ("noconnect" mode) and Consul Connect ("connect" mode).  These two environments have been combined into one "hybrid" demo that is deployed when mode is set to "connect".  These instructions are for the new hybrid demo.
+> Previous versions of this demo used seperate demo environments to demonstrate Service Discovery ("noconnect" mode) and Consul Connect ("connect" mode).  These two environments have been combined into one environment that incorporates one connection via Service Discovery and the others via Consul Connect.  These instructions are specific to this new environment.
 
 For reference, the three tiers are:
 
@@ -18,9 +18,9 @@ For reference, the three tiers are:
 
 Diagrams of previous connect/non-connect environments:
 
-- [Architecture diagram for Non-connect version](../../diagrams/Consul-demo-No-connect.png).
+- [Architecture diagram for Non-connect version](../../diagrams/Consul-demo-No-connect.png)
 - [Architecture diagram for Connect version](../../diagrams/Consul-demo-Connect.png)
-- [Architecture diagram for Connect version with port #s](../../diagrams/Consul-demo-Connect2.png).
+- [Architecture diagram for Connect version with port #s](../../diagrams/Consul-demo-Connect2.png)
 
 ### Images
 
