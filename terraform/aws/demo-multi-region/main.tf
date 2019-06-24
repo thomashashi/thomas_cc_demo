@@ -6,7 +6,7 @@ module "cluster_main" {
 
   aws_region    = "${var.aws_region}"
   consul_dc     = "${var.consul_dc}"
-  consul_acl_dc = "${var.consul_acl_dc}"
+  consul_acl_dc = "${var.consul_dc}"
 
   project_name     = "${var.project_name}"
   top_level_domain = "${var.top_level_domain}"
@@ -24,7 +24,7 @@ module "cluster_alt" {
 
   aws_region    = "${var.aws_region_alt}"
   consul_dc     = "${var.consul_dc_alt}"
-  consul_acl_dc = "${module.cluster_main.consul_dc}"
+  consul_acl_dc = "${var.consul_dc}"
 
   project_name     = "${var.project_name}"
   top_level_domain = "${var.top_level_domain}"
@@ -38,11 +38,15 @@ module "cluster_alt" {
 
 # Configure MAIN Consul Cluster for Prepared Query
 provider "consul" {
+  alias = "main"
+
   address    = "${element(module.cluster_main.consul_servers, 0)}:8500"
   datacenter = "${module.cluster_main.consul_dc}"
 }
 
-resource "consul_prepared_query" "product_service" {
+resource "consul_prepared_query" "product_service_main" {
+  provider = "consul.main"
+
   datacenter   = "${module.cluster_main.consul_dc}"
   name         = "product"
   only_passing = true
@@ -57,11 +61,15 @@ resource "consul_prepared_query" "product_service" {
 
 # Configure ALTERNATE Consul Cluster for Prepared Query
 provider "consul" {
+  alias = "alt"
+
   address    = "${element(module.cluster_alt.consul_servers, 0)}:8500"
   datacenter = "${module.cluster_alt.consul_dc}"
 }
 
-resource "consul_prepared_query" "product_service" {
+resource "consul_prepared_query" "product_service_alt" {
+  provider = "consul.alt"
+
   datacenter   = "${module.cluster_alt.consul_dc}"
   name         = "product"
   only_passing = true
@@ -74,5 +82,16 @@ resource "consul_prepared_query" "product_service" {
   }
 }
 
-# TBD - Implement Code to Link VPCs - either via module or code here
+# Link VPCs
+module "link_vpc" {
+  source = "../modules/link-vpc"
 
+  aws_region_main     = "${var.aws_region}"
+  aws_region_alt      = "${var.aws_region_alt}"
+  vpc_id_main         = "${module.cluster_main.vpc_id}"
+  vpc_id_alt          = "${module.cluster_alt.vpc_id}"
+  route_table_id_main = "${module.cluster_main.vpc_public_route_table_id}"
+  route_table_id_alt  = "${module.cluster_alt.vpc_public_route_table_id}"
+
+  hashi_tags = "${var.hashi_tags}"
+}
