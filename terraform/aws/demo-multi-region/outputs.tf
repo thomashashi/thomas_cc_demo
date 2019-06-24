@@ -34,7 +34,7 @@ output "main_product_api_servers" {
 }
 
 # Alternate Cluster Outputs
-output "main_region" {
+output "alt_region" {
   value = "${module.cluster_alt.aws_region}"
 }
 
