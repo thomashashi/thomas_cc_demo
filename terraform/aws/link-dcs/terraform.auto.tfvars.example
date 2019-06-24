@@ -1,9 +1,0 @@
-# Rename this to `terraform.auto.tfvars` and edit.
-
-hashi_tags = {
-  "TTL" = "48"
-
-  "owner" = "thomas@hashicorp.com"
-
-  "project" = "Thomas Consul Connect Demo"
-}

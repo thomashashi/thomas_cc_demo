@@ -4,12 +4,6 @@ variable "project_name" {
   description = "Set this, resources are given a unique name based on this"
 }
 
-variable "tag_project" {}
-
-variable "tag_owner" {}
-
-variable "tag_ttl" {}
-
 variable "hashi_tags" {
   type = "map"
 
