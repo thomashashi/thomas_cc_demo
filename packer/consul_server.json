@@ -9,6 +9,7 @@
         "role": "consul-server",
         "ami_owner": "{{ env `AMI_OWNER` }}",
         "owner_tag": "thomas@hashicorp.com",
+        "proj_suffix_tag": "FY20Q2",
         "type": "server"
     },
     "builders": [{
@@ -42,7 +43,7 @@
             "tags": {
                 "Name": "CC Demo Ubuntu Consul Server",
                 "owner": "{{ user `owner_tag` }}",
-                "project": "CC Demo reInvent",
+                "project": "CC Demo {{ user `proj_suffix_tag` }}",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
                 "Base_AMI": "{{ .SourceAMI }}",
                 "role": "{{ user `role` }}"
