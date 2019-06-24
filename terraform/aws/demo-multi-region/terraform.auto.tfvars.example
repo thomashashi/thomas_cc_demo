@@ -24,7 +24,7 @@ consul_dc = "dc1"
 # Name of DC to set in Alternate Consul Cluster
 consul_dc_alt = "dc2"
 
-# Do we need this in multi-region TF file?  Isnt it always the DC of main?
+# Do we need this?  Isnt it always the DC of main?
 # in main set to value of consul_dc
 #   in 2nd region, set to value of main region's consul_dc
 consul_acl_dc = "dc1"
