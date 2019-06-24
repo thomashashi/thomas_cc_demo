@@ -9,10 +9,8 @@
 project_name = "thomas-cc-demo"
 
 hashi_tags = {
-  "TTL" = "48"
-
-  "owner" = "thomas@hashicorp.com"
-
+  "TTL"     = "48"
+  "owner"   = "thomas@hashicorp.com"
   "project" = "Thomas Consul Connect Demo"
 }
 

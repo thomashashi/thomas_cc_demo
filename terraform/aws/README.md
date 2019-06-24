@@ -84,56 +84,9 @@ This will take a couple minutes to run. Once the command prompt returns, wait a 
 
 ### Demo Prep
 
-> After the servers are deployed but *before starting a demo*:
-
 - Connect to webclient server
   - `terraform output webclient_servers`
   - `ssh ubuntu@<first ip returned>`
-- Configure Consul for Prepared Query
-  - save the following text to `prepared.json`
-
-      if deploying to one datacenter use:
-
-      ```json
-      {
-      "Name": "product",
-      "Service": {
-          "Service": "product",
-          "Failover": {
-          "Datacenters": ["dc1"]
-          },
-          "OnlyPassing": true,
-          "Connect": true
-      }
-      }
-      ```
-
-      if deploying to two datacenters, use:
-
-      ```json
-      {
-      "Name": "product",
-      "Service": {
-          "Service": "product",
-          "Failover": {
-          "Datacenters": ["dc1", "dc2"]
-          },
-          "OnlyPassing": true,
-          "Connect": true
-      }
-      }
-      ```
-
-  - Run to following command to save the prepared query to consul:
-
-    ```bash
-    curl \
-        --request POST \
-        --data @prepared.json \
-        http://127.0.0.1:8500/v1/query
-    ```
-
-  - Keep SSH connect to webclient server open in terminal
 
 - Open the webclient web UI in browser
   - `terraform output webclient-lb`
@@ -155,7 +108,7 @@ This will take a couple minutes to run. Once the command prompt returns, wait a 
     - tells `web_client` how to talk to the `listing` service
     - this is using service discovery
   - Consul resolves service queried with addresses `http://XYZ.service.consul`
-    - ex: `ping mongo.service.consul`
+    - ex: `ping product.service.consul`
 
 #### Consul Service Discovery - Network traffic
 

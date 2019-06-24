@@ -4,6 +4,14 @@ output "aws_region" {
   value = "${var.aws_region}"
 }
 
+output "consul_dc" {
+  value = "${var.consul_dc}"
+}
+
+output "consul_acl_dc" {
+  value = "${var.consul_acl_dc}"
+}
+
 output "vpc_id" {
   value = "${aws_vpc.prod.id}"
 }
