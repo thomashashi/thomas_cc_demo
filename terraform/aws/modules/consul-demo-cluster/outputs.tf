@@ -24,7 +24,7 @@ output "vpc_public_route_table_id" {
   value = "${aws_route_table.public.id}"
 }
 
-output "consul-lb" {
+output "consul_lb" {
   value = "${aws_route53_record.consul_lb_a_record.fqdn}"
 }
 
@@ -32,7 +32,7 @@ output "consul_servers" {
   value = ["${aws_route53_record.consul_a_records.*.fqdn}"]
 }
 
-output "webclient-lb" {
+output "webclient_lb" {
   value = "${aws_route53_record.webclient_lb_a_record.fqdn}"
 }
 

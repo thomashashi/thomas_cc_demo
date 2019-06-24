@@ -1,15 +1,19 @@
 # Outputs
 
-output "consul-lb" {
-  value = "${module.cluster_main.consul-lb}"
+output "main_region" {
+  value = "${module.cluster_main.aws_region}"
+}
+
+output "consul_lb" {
+  value = "${module.cluster_main.consul_lb}"
 }
 
 output "consul_servers" {
   value = ["${module.cluster_main.consul_servers}"]
 }
 
-output "webclient-lb" {
-  value = "${module.cluster_main.webclient-lb}"
+output "webclient_lb" {
+  value = "${module.cluster_main.webclient_lb}"
 }
 
 output "webclient_servers" {
