@@ -3,17 +3,17 @@
 # Public LB for consul servers
 
 resource "aws_lb" "consul_lb" {
-  name               = "${var.project_name}-c-lb"
+  name               = "${local.unique_proj_id}-c-lb"
   internal           = false
   load_balancer_type = "application"
   subnets            = ["${aws_subnet.public.*.id}"]
   security_groups    = ["${aws_security_group.lb_default.id}"]
 
-  tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-c-lb"))}"
+  tags = "${merge(var.hashi_tags, map("Name", "${local.unique_proj_id}-c-lb"))}"
 }
 
 resource "aws_lb_target_group" "consul" {
-  name     = "${var.project_name}-c-lb-tg"
+  name     = "${local.unique_proj_id}-c-lb-tg"
   port     = 8500
   protocol = "HTTP"
   vpc_id   = "${aws_vpc.prod.id}"
@@ -44,17 +44,17 @@ resource "aws_lb_listener" "consul_lb" {
 # Public LB for webclient
 
 resource "aws_lb" "webclient-lb" {
-  name               = "${var.project_name}-lb"
+  name               = "${local.unique_proj_id}-lb"
   internal           = false
   load_balancer_type = "application"
   subnets            = ["${aws_subnet.public.*.id}"]
   security_groups    = ["${aws_security_group.lb_default.id}"]
 
-  tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-lb"))}"
+  tags = "${merge(var.hashi_tags, map("Name", "${local.unique_proj_id}-lb"))}"
 }
 
 resource "aws_lb_target_group" "webclient" {
-  name     = "${var.project_name}-lb-tg"
+  name     = "${local.unique_proj_id}-lb-tg"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = "${aws_vpc.prod.id}"
