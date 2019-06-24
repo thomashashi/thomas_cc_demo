@@ -1,6 +1,6 @@
 # Outputs
 
-output "main_region" {
+output "cluster_region" {
   value = "${module.cluster_main.aws_region}"
 }
 
