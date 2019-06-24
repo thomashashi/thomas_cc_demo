@@ -18,25 +18,6 @@ module "cluster_main" {
   hashi_tags = "${var.hashi_tags}"
 }
 
-# Configure MAIN Consul Cluster for Prepared Query
-provider "consul" {
-  address    = "${element(module.cluster_main.consul_servers, 0)}:8500"
-  datacenter = "${module.cluster_main.consul_dc}"
-}
-
-resource "consul_prepared_query" "product_service" {
-  datacenter   = "${module.cluster_main.consul_dc}"
-  name         = "product"
-  only_passing = true
-  connect      = true
-
-  service = "product"
-
-  failover {
-    datacenters = ["${module.cluster_main.consul_dc}"]
-  }
-}
-
 # Create ALTERNATE Consul Connect cluster
 module "cluster_alt" {
   source = "../modules/consul-demo-cluster"
@@ -55,6 +36,25 @@ module "cluster_alt" {
   hashi_tags = "${var.hashi_tags}"
 }
 
+# Configure MAIN Consul Cluster for Prepared Query
+provider "consul" {
+  address    = "${element(module.cluster_main.consul_servers, 0)}:8500"
+  datacenter = "${module.cluster_main.consul_dc}"
+}
+
+resource "consul_prepared_query" "product_service" {
+  datacenter   = "${module.cluster_main.consul_dc}"
+  name         = "product"
+  only_passing = true
+  connect      = true
+
+  service = "product"
+
+  failover {
+    datacenters = ["${module.cluster_main.consul_dc}", "${module.cluster_alt.consul_dc}"]
+  }
+}
+
 # Configure ALTERNATE Consul Cluster for Prepared Query
 provider "consul" {
   address    = "${element(module.cluster_alt.consul_servers, 0)}:8500"
@@ -70,7 +70,7 @@ resource "consul_prepared_query" "product_service" {
   service = "product"
 
   failover {
-    datacenters = ["${module.cluster_alt.consul_dc}"]
+    datacenters = ["${module.cluster_main.consul_dc}", "${module.cluster_alt.consul_dc}"]
   }
 }
 
