@@ -22,7 +22,7 @@ resource aws_instance "consul" {
   iam_instance_profile        = "${aws_iam_instance_profile.consul_iam_profile.name}"
   user_data_base64            = "${base64encode(var.consul_lic)}"
 
-  tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-consul-server"), map("role", "consul-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
+  tags = "${merge(var.hashi_tags, map("Name", "${local.unique_proj_id}-consul-server"), map("role", "consul-server"), map("consul-cluster-name", replace("consul-cluster-${local.unique_proj_id}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
 }
 
 # Deploy Webclient servers
@@ -46,7 +46,7 @@ resource aws_instance "webclient" {
   vpc_security_group_ids      = ["${aws_security_group.svr_default.id}"]
   iam_instance_profile        = "${aws_iam_instance_profile.consul_iam_profile.name}"
 
-  tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-webclient-server-${count.index}"), map("role", "webclient-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
+  tags = "${merge(var.hashi_tags, map("Name", "${local.unique_proj_id}-webclient-server-${count.index}"), map("role", "webclient-server"), map("consul-cluster-name", replace("consul-cluster-${local.unique_proj_id}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
 
   depends_on = ["aws_instance.consul"]
 }
@@ -72,7 +72,7 @@ resource aws_instance "listing-api" {
   vpc_security_group_ids      = ["${aws_security_group.svr_default.id}"]
   iam_instance_profile        = "${aws_iam_instance_profile.consul_iam_profile.name}"
 
-  tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-listing-api-server-${count.index}"), map("role", "listing-api-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
+  tags = "${merge(var.hashi_tags, map("Name", "${local.unique_proj_id}-listing-api-server-${count.index}"), map("role", "listing-api-server"), map("consul-cluster-name", replace("consul-cluster-${local.unique_proj_id}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
 
   depends_on = ["aws_instance.consul"]
 }
@@ -98,7 +98,7 @@ resource aws_instance "product-api" {
   vpc_security_group_ids      = ["${aws_security_group.svr_default.id}"]
   iam_instance_profile        = "${aws_iam_instance_profile.consul_iam_profile.name}"
 
-  tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-product-api-server-${count.index}"), map("role", "product-api-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
+  tags = "${merge(var.hashi_tags, map("Name", "${local.unique_proj_id}-product-api-server-${count.index}"), map("role", "product-api-server"), map("consul-cluster-name", replace("consul-cluster-${local.unique_proj_id}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
 
   depends_on = ["aws_instance.consul"]
 }
@@ -124,7 +124,7 @@ resource aws_instance "mongo" {
   vpc_security_group_ids      = ["${aws_security_group.svr_default.id}"]
   iam_instance_profile        = "${aws_iam_instance_profile.consul_iam_profile.name}"
 
-  tags = "${merge(var.hashi_tags, map("Name", "${var.project_name}-mongo-server-${count.index}"), map("role", "mongo-server"), map("consul-cluster-name", replace("consul-cluster-${var.project_name}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
+  tags = "${merge(var.hashi_tags, map("Name", "${local.unique_proj_id}-mongo-server-${count.index}"), map("role", "mongo-server"), map("consul-cluster-name", replace("consul-cluster-${local.unique_proj_id}-${var.hashi_tags["owner"]}", " ", "")), map("consul-cluster-dc-name", "${var.consul_dc}"), map("consul-cluster-acl-dc-name", "${var.consul_acl_dc}"))}"
 
   depends_on = ["aws_instance.consul"]
 }

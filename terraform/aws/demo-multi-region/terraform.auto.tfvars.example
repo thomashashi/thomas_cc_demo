@@ -6,9 +6,13 @@
 # of this in a single AWS account, you'll need to make these
 # distinct to keep the instances separate.
 
-# Consul Cluster region and DC Name
+# Main Consul Cluster region and DC Name
 aws_region = "us-east-1"
 consul_dc  = "dc1"
+
+# Alternate Consul Cluster region and unique DC Name
+aws_region_alt = "us-west-2"
+consul_dc_alt  = "dc2"
 
 # Unique Project Name
 project_name = "thomas-cc-demo"

@@ -22,6 +22,11 @@ variable "consul_dc" {
   description = "Consul cluster DC name"
 }
 
+variable "consul_dc_alt" {
+  description = "Alternate Consul cluster DC name"
+}
+
+# Do we need this in multi-region TF file?  Isnt it always the DC of main?
 # variable "consul_acl_dc" {
 #   description = "Consul ACL cluster name"
 # }
@@ -40,6 +45,12 @@ variable "top_level_domain" {
 variable "aws_region" {
   description = "Region into which to deploy"
   default     = "us-west-2"
+}
+
+# Region to deploy alternate cluster
+variable "aws_region_alt" {
+  description = "Region into which to deploy"
+  default     = "us-east-1"
 }
 
 variable "consul_lic" {

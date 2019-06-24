@@ -9,6 +9,7 @@
         "role": "consul-base",
         "type": "{{ env `NODE_TYPE` }}",
         "owner_tag": "thomas@hashicorp.com",
+        "proj_suffix_tag": "FY20Q2",
         "consul_version": "1.5.1"
     },
     "builders": [{
@@ -42,13 +43,12 @@
             "tags": {
                 "Name": "CC Demo Ubuntu Consul Base",
                 "owner": "{{ user `owner_tag` }}",
-                "project": "CC Demo reInvent",
+                "project": "CC Demo {{ user `proj_suffix_tag` }}",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
                 "Base_AMI": "{{ .SourceAMI }}",
                 "consul_version": "{{ user `consul_version` }}",
                 "role": "{{ user `role` }}"
-            },
-            "ami_groups": ["all"]
+            }
         }
     ],
     "provisioners": [{
