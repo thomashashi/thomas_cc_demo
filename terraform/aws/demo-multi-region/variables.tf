@@ -14,6 +14,16 @@ variable "hashi_tags" {
   }
 }
 
+variable "vpc_cidr_main" {
+  description = "The netblock for the main VPC"
+  default     = "10.0.0.0/16"
+}
+
+variable "vpc_cidr_alt" {
+  description = "The netblock for the alt VPC"
+  default     = "10.128.0.0/16"
+}
+
 variable "ssh_key_name" {
   description = "Name of existing AWS ssh key"
 }

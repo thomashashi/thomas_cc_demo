@@ -39,13 +39,13 @@ resource "aws_vpc_peering_connection_accepter" "alt" {
 resource "aws_route" "main_to_alt" {
   provider                  = "aws.main"
   route_table_id            = "${var.route_table_id_main}"
-  destination_cidr_block    = "10.128.0.0/16"
+  destination_cidr_block    = "${var.cidr_block_alt}"
   vpc_peering_connection_id = "${aws_vpc_peering_connection.main.id}"
 }
 
 resource "aws_route" "alt_to_main" {
   provider                  = "aws.alt"
   route_table_id            = "${var.route_table_id_alt}"
-  destination_cidr_block    = "10.0.0.0/16"
+  destination_cidr_block    = "${var.cidr_block_main}"
   vpc_peering_connection_id = "${aws_vpc_peering_connection_accepter.alt.id}"
 }

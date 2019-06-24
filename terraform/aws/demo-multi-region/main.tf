@@ -7,7 +7,7 @@ module "cluster_main" {
   aws_region    = "${var.aws_region}"
   consul_dc     = "${var.consul_dc}"
   consul_acl_dc = "${var.consul_dc}"
-  vpc_netblock  = "10.0.0.0/16"
+  vpc_netblock  = "${var.vpc_cidr_main}"
 
   project_name     = "${var.project_name}"
   top_level_domain = "${var.top_level_domain}"
@@ -26,7 +26,7 @@ module "cluster_alt" {
   aws_region    = "${var.aws_region_alt}"
   consul_dc     = "${var.consul_dc_alt}"
   consul_acl_dc = "${var.consul_dc}"
-  vpc_netblock  = "10.128.0.0/16"
+  vpc_netblock  = "${var.vpc_cidr_alt}"
 
   project_name     = "${var.project_name}"
   top_level_domain = "${var.top_level_domain}"
@@ -94,6 +94,8 @@ module "link_vpc" {
   vpc_id_alt          = "${module.cluster_alt.vpc_id}"
   route_table_id_main = "${module.cluster_main.vpc_public_route_table_id}"
   route_table_id_alt  = "${module.cluster_alt.vpc_public_route_table_id}"
+  cidr_block_alt      = "${var.vpc_cidr_alt}"
+  cidr_block_main     = "${var.vpc_cidr_main}"
 
   hashi_tags = "${var.hashi_tags}"
 }
