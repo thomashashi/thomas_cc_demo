@@ -7,6 +7,7 @@ module "cluster_main" {
   aws_region    = "${var.aws_region}"
   consul_dc     = "${var.consul_dc}"
   consul_acl_dc = "${var.consul_dc}"
+  vpc_netblock  = "10.0.0.0/16"
 
   project_name     = "${var.project_name}"
   top_level_domain = "${var.top_level_domain}"
@@ -25,6 +26,7 @@ module "cluster_alt" {
   aws_region    = "${var.aws_region_alt}"
   consul_dc     = "${var.consul_dc_alt}"
   consul_acl_dc = "${var.consul_dc}"
+  vpc_netblock  = "10.128.0.0/16"
 
   project_name     = "${var.project_name}"
   top_level_domain = "${var.top_level_domain}"
