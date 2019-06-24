@@ -1,65 +1,51 @@
-data "terraform_remote_state" "east" {
-  backend = "atlas"
+# Link two AWS VPCs and add Routes
 
-  config {
-    name = "kula/consul-reinvent-east"
-  }
-}
-
-data "terraform_remote_state" "west" {
-  backend = "atlas"
-
-  config {
-    name = "kula/consul-reinvent-west"
-  }
+provider "aws" {
+  region = "${var.aws_region_main}"
+  alias  = "main"
 }
 
 provider "aws" {
-  region = "${data.terraform_remote_state.east.aws_region}"
-  alias  = "east"
+  region = "${var.aws_region_alt}"
+  alias  = "alt"
 }
 
-provider "aws" {
-  region = "${data.terraform_remote_state.west.aws_region}"
-  alias  = "west"
+data "aws_caller_identity" "alt" {
+  provider = "aws.alt"
 }
 
-data "aws_caller_identity" "west" {
-  provider = "aws.west"
-}
-
-resource "aws_vpc_peering_connection" "east" {
-  provider      = "aws.east"
-  vpc_id        = "${data.terraform_remote_state.east.vpc_id}"
-  peer_vpc_id   = "${data.terraform_remote_state.west.vpc_id}"
-  peer_owner_id = "${data.aws_caller_identity.west.account_id}"
-  peer_region   = "us-west-2"
+resource "aws_vpc_peering_connection" "main" {
+  provider      = "aws.main"
+  vpc_id        = "${var.vpc_id_main}"
+  peer_vpc_id   = "${var.vpc_id_alt}"
+  peer_owner_id = "${data.aws_caller_identity.alt.account_id}"
+  peer_region   = "${var.aws_region_alt}"
   auto_accept   = false
 
-  tags = "${merge(map("Name", "prod-east-west-link"), map("Side", "Requestor"), var.hashi_tags)}"
+  tags = "${merge(map("Name", "prod-main-alt-link"), map("Side", "Requestor"), var.hashi_tags)}"
 }
 
 # Accepter's side of the connection.
-resource "aws_vpc_peering_connection_accepter" "west" {
-  provider                  = "aws.west"
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.east.id}"
+resource "aws_vpc_peering_connection_accepter" "alt" {
+  provider                  = "aws.alt"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.main.id}"
   auto_accept               = true
 
-  tags = "${merge(map("Name", "prod-east-west-link"), map("Side", "Acceptor"), var.hashi_tags)}"
+  tags = "${merge(map("Name", "prod-main-alt-link"), map("Side", "Acceptor"), var.hashi_tags)}"
 }
 
 # Add routes
 
-resource "aws_route" "east_to_west" {
-  provider                  = "aws.east"
-  route_table_id            = "${data.terraform_remote_state.east.vpc_public_route_table_id}"
+resource "aws_route" "main_to_alt" {
+  provider                  = "aws.main"
+  route_table_id            = "${var.route_table_id_main}"
   destination_cidr_block    = "10.128.0.0/16"
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.east.id}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.main.id}"
 }
 
-resource "aws_route" "west_to_east" {
-  provider                  = "aws.west"
-  route_table_id            = "${data.terraform_remote_state.west.vpc_public_route_table_id}"
+resource "aws_route" "alt_to_main" {
+  provider                  = "aws.alt"
+  route_table_id            = "${var.route_table_id_alt}"
   destination_cidr_block    = "10.0.0.0/16"
-  vpc_peering_connection_id = "${aws_vpc_peering_connection_accepter.west.id}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection_accepter.alt.id}"
 }
