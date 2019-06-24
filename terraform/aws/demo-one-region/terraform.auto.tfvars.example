@@ -6,15 +6,18 @@
 # of this in a single AWS account, you'll need to make these
 # distinct to keep the instances separate.
 
+# Consul Cluster region and DC Name
+aws_region = "us-east-1"
+consul_dc  = "dc1"
+
+# Unique Project Name
 project_name = "thomas-cc-demo"
 
 hashi_tags = {
-  "TTL"     = "48"
-  "owner"   = "thomas@hashicorp.com"
   "project" = "Thomas Consul Connect Demo"
+  "owner"   = "thomas@hashicorp.com"
+  "TTL"     = "48"
 }
-
-aws_region = "us-east-1"
 
 # Name of existing SSH Keypair in AWS Region
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
@@ -26,12 +29,5 @@ route53_zone_id = "ZZZZZZZZZZZZZZ"
 # TLD to register nodes and lb in
 top_level_domain = "test.example.com"
 
-# if setting up a 2nd region, set to dc2
-consul_dc = "dc1"
-
-# in main set to value of consul_dc
-#   in 2nd region, set to value of main region's consul_dc
-consul_acl_dc = "dc1"
-
-# Consul Enterprise License Key
-consul_lic = "paste-consul-enterprise-license-string-here"
+# Consul Enterprise License Key (if exists)
+# consul_lic = "consul-enterprise-license-string-here"

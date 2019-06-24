@@ -6,7 +6,7 @@ module "cluster_main" {
 
   aws_region    = "${var.aws_region}"
   consul_dc     = "${var.consul_dc}"
-  consul_acl_dc = "${var.consul_acl_dc}"
+  consul_acl_dc = "${var.consul_dc}"
 
   project_name     = "${var.project_name}"
   top_level_domain = "${var.top_level_domain}"
