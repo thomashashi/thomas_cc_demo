@@ -4,12 +4,6 @@ variable "project_name" {
   description = "Set this, resources are given a unique name based on this"
 }
 
-variable "tag_project" {}
-
-variable "tag_owner" {}
-
-variable "tag_ttl" {}
-
 variable "hashi_tags" {
   type = "map"
 
@@ -42,15 +36,15 @@ variable "top_level_domain" {
 
 # Optional
 
-variable "server_machine_type" {
-  description = "The machine type (size) to deploy"
-  default     = "t2.micro"
-}
-
-# Images currently only exist in us-west-2
+# Images currently exist in us-east-1 and us-west-2
 variable "aws_region" {
   description = "Region into which to deploy"
   default     = "us-west-2"
+}
+
+variable "server_machine_type" {
+  description = "The machine type (size) to deploy"
+  default     = "t2.micro"
 }
 
 variable "client_machine_type" {

@@ -8,17 +8,11 @@
 
 project_name = "thomas-cc-demo"
 
-tag_project = "Thomas Consul Connect Demo"
-
-tag_owner = "thomas@hashicorp.com"
-
-tag_ttl = "48"
-
-# hashi_tags = {
-#   "TTL" = "48"
-#   "owner" = "thomas@hashicorp.com"
-#   "project" = "Thomas Consul Connect Demo"
-# }
+hashi_tags = {
+  "TTL"     = "48"
+  "owner"   = "thomas@hashicorp.com"
+  "project" = "Thomas Consul Connect Demo"
+}
 
 aws_region = "us-east-1"
 
