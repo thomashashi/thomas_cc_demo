@@ -1,0 +1,43 @@
+# Rename this to `terraform.auto.tfvars` and edit.
+# You should set all of the variables.
+# In particular, 'project_name' and 'hashi_tags["owner"]' 
+# combined set the Consul 'cluster name' which the cloud
+# auto-join uses --- if you want to run more than one instance
+# of this in a single AWS account, you'll need to make these
+# distinct to keep the instances separate.
+
+project_name = "thomas-cc-demo"
+
+hashi_tags = {
+  "TTL"     = "48"
+  "owner"   = "thomas@hashicorp.com"
+  "project" = "Thomas Consul Connect Demo"
+}
+
+aws_region = "us-east-1"
+
+aws_region_alt = "us-west-2"
+
+# Name of DC to set in Main Consul Cluster
+consul_dc = "dc1"
+
+# Name of DC to set in Alternate Consul Cluster
+consul_dc_alt = "dc2"
+
+# Do we need this in multi-region TF file?  Isnt it always the DC of main?
+# in main set to value of consul_dc
+#   in 2nd region, set to value of main region's consul_dc
+consul_acl_dc = "dc1"
+
+# Name of existing SSH Keypair in AWS Region
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
+ssh_key_name = "thomas-yubikey"
+
+# zone ID for TLD
+route53_zone_id = "ZZZZZZZZZZZZZZ"
+
+# TLD to register nodes and lb in
+top_level_domain = "test.example.com"
+
+# Consul Enterprise License Key
+consul_lic = "paste-consul-enterprise-license-string-here"
