@@ -33,3 +33,11 @@ variable "route_table_id_main" {
 variable "route_table_id_alt" {
   description = "Alt VPC Route Table ID"
 }
+
+variable "cidr_block_main" {
+  description = "The netblock for the main VPC"
+}
+
+variable "cidr_block_alt" {
+  description = "The netblock for the alt VPC"
+}
