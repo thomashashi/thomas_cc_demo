@@ -88,14 +88,15 @@ resource "consul_prepared_query" "product_service_alt" {
 module "link_vpc" {
   source = "../modules/link-vpc"
 
-  aws_region_main     = "${var.aws_region}"
-  aws_region_alt      = "${var.aws_region_alt}"
+  aws_region_main     = "${module.cluster_main.aws_region}"
   vpc_id_main         = "${module.cluster_main.vpc_id}"
-  vpc_id_alt          = "${module.cluster_alt.vpc_id}"
   route_table_id_main = "${module.cluster_main.vpc_public_route_table_id}"
-  route_table_id_alt  = "${module.cluster_alt.vpc_public_route_table_id}"
-  cidr_block_alt      = "${var.vpc_cidr_alt}"
-  cidr_block_main     = "${var.vpc_cidr_main}"
+  cidr_block_main     = "${module.cluster_main.vpc_netblock}"
+
+  aws_region_alt     = "${module.cluster_alt.aws_region}"
+  vpc_id_alt         = "${module.cluster_alt.vpc_id}"
+  route_table_id_alt = "${module.cluster_alt.vpc_public_route_table_id}"
+  cidr_block_alt     = "${module.cluster_alt.vpc_netblock}"
 
   hashi_tags = "${var.hashi_tags}"
 }
