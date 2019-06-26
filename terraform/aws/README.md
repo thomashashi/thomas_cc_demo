@@ -224,5 +224,48 @@ This will take a couple minutes to run. Once the command prompt returns, wait a 
 - Populate K/V items on the webclient UI by adding KV entries in Consul
 - On Consul Web UI, create entry `product/` and save
   - Any K/V's created under `product/` will display in the webclient UI
-  - In Consul Web UI select `product/`, hit create then specify key & value
-    - turn off `code` option or change type to HCL (lower right corner)
+  - In Consul Web UI select `product/` folder & create a key called `test` and assign it a value
+- On webclient UI, point out **Configuration** Section
+  - the `product` service reads the Consul K/V store (along with the mongodb records) & returns them to `web_client` where they are displayed
+
+### Multi-Region Demo (Only) - Failover with Prepared Queries
+
+> Webclient service is configured to use a "prepared query" to find the `product` service.
+> If every product service in the current DC fails, it looks for the service in other DCs
+
+- Setup
+  - Create a `product/` K/V folder on each DC
+  - in `product/` create a key called "test" with different values in each DC
+- Open `web_client` for DC1
+  - point out **Configuration** Section
+    - lists **datacenter = dc1** and the value of **test** set for DC1
+- Trigger Failover
+  - in the the Consul UI in DC1
+  - on K/V tab, create a key called `run` in `product/` and set it to `false`
+- switch to the services tab of the Consul UI in DC1
+  - refresh and show the `product` servers slowly
+  - keep refreshing until there is one health check failure for each `product` node in the DC (2 by default)
+- switch back to `web_client` for DC1
+  - point out **Configuration** Section
+    - It's not showing **datacenter = dc2** and the value of **test** set for DC2
+    - Consul has automatically used the `product` service in DC2
+- (optional) review the Consul configuration that llowed the web client to do this
+  - ssh into `web_client` in DC1
+  - `cat /etc/consul/web_client.hcl`
+  - Point out this stanza:
+
+    ```js
+    connect {
+      sidecar_service = {
+        proxy = {
+          upstreams = [
+            {
+              destination_name = "product"
+              local_bind_port = 10001
+              destination_type = "prepared_query"
+            }
+          ]
+        }
+      }
+    }
+    ```
