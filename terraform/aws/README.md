@@ -96,6 +96,13 @@ This will take a couple minutes to run. Once the command prompt returns, wait a 
   - get fqdn of Consul LB `terraform output consul-lb`
   - Open value returned in format `http://<consul_server_fqdn>:8500/ui`
 
+### Multi Region - Temporary Setup Step - connect consul clusters
+
+- In the Consul UI, on the Kay/Value tab, copy the value of the key `server_ips`
+- Connect to a Consul Server in each DC
+  - type the following command: `consul join -wan <paste value of server_ips here>`
+  - remember run this on one consul server in each DC
+
 ### Consul Service Discovery
 
 - We're going to review a service using Consul for Service Discovery
@@ -219,23 +226,17 @@ This will take a couple minutes to run. Once the command prompt returns, wait a 
      - If you double the number of backends, you have to add _another_ 240 endpoint combinations
      - With Intentions, you do _nothing_ because intentions follow the service
 
-### Configuration K/V - displayed on webclient UI (under Configuration)
+### Configuration K/V - displayed on webclient UI
 
-- Populate K/V items on the webclient UI by adding KV entries in Consul
-- On Consul Web UI, create entry `product/` and save
-  - Any K/V's created under `product/` will display in the webclient UI
-  - In Consul Web UI select `product/` folder & create a key called `test` and assign it a value
 - On webclient UI, point out **Configuration** Section
-  - the `product` service reads the Consul K/V store (along with the mongodb records) & returns them to `web_client` where they are displayed
+  - the `product` service reads the Consul K/V store (along with the mongodb records)
+  - data returns to `web_client` and displayed
 
 ### Multi-Region Demo (Only) - Failover with Prepared Queries
 
 > Webclient service is configured to use a "prepared query" to find the `product` service.
 > If every product service in the current DC fails, it looks for the service in other DCs
 
-- Setup
-  - Create a `product/` K/V folder on each DC
-  - in `product/` create a key called "test" with different values in each DC
 - Open `web_client` for DC1
   - point out **Configuration** Section
     - lists **datacenter = dc1** and the value of **test** set for DC1
