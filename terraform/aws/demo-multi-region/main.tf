@@ -38,52 +38,6 @@ module "cluster_alt" {
   hashi_tags = "${var.hashi_tags}"
 }
 
-# Configure MAIN Consul Cluster for Prepared Query
-provider "consul" {
-  alias = "main"
-
-  address    = "${element(module.cluster_main.consul_servers, 0)}:8500"
-  datacenter = "${module.cluster_main.consul_dc}"
-}
-
-resource "consul_prepared_query" "product_service_main" {
-  provider = "consul.main"
-
-  datacenter   = "${module.cluster_main.consul_dc}"
-  name         = "product"
-  only_passing = true
-  connect      = true
-
-  service = "product"
-
-  failover {
-    datacenters = ["${module.cluster_main.consul_dc}", "${module.cluster_alt.consul_dc}"]
-  }
-}
-
-# Configure ALTERNATE Consul Cluster for Prepared Query
-provider "consul" {
-  alias = "alt"
-
-  address    = "${element(module.cluster_alt.consul_servers, 0)}:8500"
-  datacenter = "${module.cluster_alt.consul_dc}"
-}
-
-resource "consul_prepared_query" "product_service_alt" {
-  provider = "consul.alt"
-
-  datacenter   = "${module.cluster_alt.consul_dc}"
-  name         = "product"
-  only_passing = true
-  connect      = true
-
-  service = "product"
-
-  failover {
-    datacenters = ["${module.cluster_main.consul_dc}", "${module.cluster_alt.consul_dc}"]
-  }
-}
-
 # Link VPCs
 module "link_vpc" {
   source = "../modules/link-vpc"
@@ -99,4 +53,83 @@ module "link_vpc" {
   cidr_block_alt     = "${module.cluster_alt.vpc_netblock}"
 
   hashi_tags = "${var.hashi_tags}"
+}
+
+# Configure Consul Clusters in each DC
+provider "consul" {
+  alias = "main"
+
+  address    = "${element(module.cluster_main.consul_servers, 0)}:8500"
+  datacenter = "${module.cluster_main.consul_dc}"
+}
+
+provider "consul" {
+  alias = "alt"
+
+  address    = "${element(module.cluster_alt.consul_servers, 0)}:8500"
+  datacenter = "${module.cluster_alt.consul_dc}"
+}
+
+# Configure Prepared Query in main DC
+resource "consul_prepared_query" "product_service_main" {
+  provider = "consul.main"
+
+  datacenter   = "${module.cluster_main.consul_dc}"
+  name         = "product"
+  only_passing = true
+  connect      = true
+
+  service = "product"
+
+  failover {
+    datacenters = ["${module.cluster_main.consul_dc}", "${module.cluster_alt.consul_dc}"]
+  }
+}
+
+# Configure Prepared Query in alt DC
+resource "consul_prepared_query" "product_service_alt" {
+  provider = "consul.alt"
+
+  datacenter   = "${module.cluster_alt.consul_dc}"
+  name         = "product"
+  only_passing = true
+  connect      = true
+
+  service = "product"
+
+  failover {
+    datacenters = ["${module.cluster_main.consul_dc}", "${module.cluster_alt.consul_dc}"]
+  }
+}
+
+# Add configuration data to Consul KV in main DC
+resource "consul_keys" "server_ips_main" {
+  provider = "consul.main"
+
+  key {
+    path  = "server_ips"
+    value = "${join(" ", concat(module.cluster_main.consul_servers_private_ip, module.cluster_alt.consul_servers_private_ip))}"
+  }
+
+  key {
+    path   = "product/enable_hyper_speed"
+    value  = "true"
+    delete = true
+  }
+}
+
+# Add configuration data to Consul KV in alt DC
+resource "consul_keys" "server_ips_alt" {
+  provider = "consul.alt"
+
+  key {
+    path  = "server_ips"
+    value = "${join(" ", concat(module.cluster_main.consul_servers_private_ip, module.cluster_alt.consul_servers_private_ip))}"
+  }
+
+  key {
+    path   = "product/enable_hyper_speed"
+    value  = "true"
+    delete = true
+  }
 }
