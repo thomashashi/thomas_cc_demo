@@ -36,3 +36,23 @@ resource "consul_prepared_query" "product_service" {
     datacenters = ["${module.cluster_main.consul_dc}"]
   }
 }
+
+resource "consul_keys" "server_ips_main" {
+  provider = "consul.main"
+
+  key {
+    path   = "product/enable_hyper_speed"
+    value  = "true"
+    delete = true
+  }
+}
+
+resource "consul_keys" "server_ips_alt" {
+  provider = "consul.alt"
+
+  key {
+    path   = "product/enable_hyper_speed"
+    value  = "true"
+    delete = true
+  }
+}

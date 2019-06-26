@@ -21,6 +21,10 @@ resource "aws_route_table" "public" {
   }
 
   tags = "${merge(map("Name", "public route table"), var.hashi_tags)}"
+
+  lifecycle {
+    ignore_changes = "route"
+  }
 }
 
 resource "aws_subnet" "public" {
