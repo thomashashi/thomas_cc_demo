@@ -16,6 +16,10 @@ output "vpc_id" {
   value = "${aws_vpc.prod.id}"
 }
 
+output "vpc_netblock" {
+  value = "${var.vpc_netblock}"
+}
+
 output "public_subnets" {
   value = "${aws_subnet.public.*.cidr_block}"
 }
@@ -30,6 +34,10 @@ output "consul_lb" {
 
 output "consul_servers" {
   value = ["${aws_route53_record.consul_a_records.*.fqdn}"]
+}
+
+output "consul_servers_private_ip" {
+  value = ["${aws_instance.consul.*.private_ip}"]
 }
 
 output "webclient_lb" {
