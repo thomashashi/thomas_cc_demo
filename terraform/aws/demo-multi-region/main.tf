@@ -98,7 +98,7 @@ resource "consul_prepared_query" "product_service_alt" {
   service = "product"
 
   failover {
-    datacenters = ["${module.cluster_main.consul_dc}", "${module.cluster_alt.consul_dc}"]
+    datacenters = ["${module.cluster_alt.consul_dc}", "${module.cluster_main.consul_dc}"]
   }
 }
 
@@ -116,6 +116,12 @@ resource "consul_keys" "server_ips_main" {
     value  = "true"
     delete = true
   }
+
+  key {
+    path   = "product/run"
+    value  = "true"
+    delete = true
+  }
 }
 
 # Add configuration data to Consul KV in alt DC
@@ -129,6 +135,12 @@ resource "consul_keys" "server_ips_alt" {
 
   key {
     path   = "product/enable_hyper_speed"
+    value  = "true"
+    delete = true
+  }
+
+  key {
+    path   = "product/run"
     value  = "true"
     delete = true
   }
