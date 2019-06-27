@@ -36,6 +36,11 @@ variable "consul_dc_alt" {
   description = "Alternate Consul cluster DC name"
 }
 
+variable "ssh_pri_key_file" {
+  description = "Private SSH key for post provisioning config"
+  default     = ""
+}
+
 # Do we need this in multi-region TF file?  Isnt it always the DC of main?
 # variable "consul_acl_dc" {
 #   description = "Consul ACL cluster name"

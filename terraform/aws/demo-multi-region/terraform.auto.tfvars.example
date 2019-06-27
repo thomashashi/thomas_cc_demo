@@ -27,6 +27,10 @@ hashi_tags = {
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html
 ssh_key_name = "thomas-yubikey"
 
+# Private SSH key that is referenced by ssh_key_name variable
+#   if not defined, the counsul datacenters will not be joined in post provisioning
+ssh_pri_key_file = "~/.ssh/id_rsa"
+
 # zone ID for TLD
 route53_zone_id = "ZZZZZZZZZZZZZZ"
 
