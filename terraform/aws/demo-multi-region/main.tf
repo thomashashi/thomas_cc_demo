@@ -98,7 +98,7 @@ resource "consul_prepared_query" "product_service_alt" {
   service = "product"
 
   failover {
-    datacenters = ["${module.cluster_main.consul_dc}", "${module.cluster_alt.consul_dc}"]
+    datacenters = ["${module.cluster_alt.consul_dc}", "${module.cluster_main.consul_dc}"]
   }
 }
 
@@ -113,6 +113,12 @@ resource "consul_keys" "server_ips_main" {
 
   key {
     path   = "product/enable_hyper_speed"
+    value  = "true"
+    delete = true
+  }
+
+  key {
+    path   = "product/run"
     value  = "true"
     delete = true
   }
@@ -131,5 +137,61 @@ resource "consul_keys" "server_ips_alt" {
     path   = "product/enable_hyper_speed"
     value  = "true"
     delete = true
+  }
+
+  key {
+    path   = "product/run"
+    value  = "true"
+    delete = true
+  }
+}
+
+# join consul datacenters by running command on main DC server
+resource "null_resource" "join_dc_main" {
+  count      = "${length(var.ssh_pri_key_file) > 0 ? 1 : 0}"
+  depends_on = ["module.link_vpc", "consul_keys.server_ips_main"]
+
+  triggers = {
+    consul_ips = "${join(" ", concat(module.cluster_main.consul_servers_private_ip, module.cluster_alt.consul_servers_private_ip))}"
+  }
+
+  connection {
+    type        = "ssh"
+    host        = "${element(module.cluster_main.consul_servers, 0)}"
+    user        = "ubuntu"
+    private_key = "${file(var.ssh_pri_key_file)}"
+  }
+
+  provisioner "remote-exec" {
+    when = "create"
+
+    inline = [
+      "consul lock server_ips consul join -wan $(consul kv get server_ips)",
+    ]
+  }
+}
+
+# join consul datacenters by running command on alt DC server
+resource "null_resource" "join_dc_alt" {
+  count      = "${length(var.ssh_pri_key_file) > 0 ? 1 : 0}"
+  depends_on = ["module.link_vpc", "consul_keys.server_ips_alt"]
+
+  triggers = {
+    consul_ips = "${join(" ", concat(module.cluster_main.consul_servers_private_ip, module.cluster_alt.consul_servers_private_ip))}"
+  }
+
+  connection {
+    type        = "ssh"
+    host        = "${element(module.cluster_alt.consul_servers, 0)}"
+    user        = "ubuntu"
+    private_key = "${file(var.ssh_pri_key_file)}"
+  }
+
+  provisioner "remote-exec" {
+    when = "create"
+
+    inline = [
+      "consul lock server_ips consul join -wan $(consul kv get server_ips)",
+    ]
   }
 }
