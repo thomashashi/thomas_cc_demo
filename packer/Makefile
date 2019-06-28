@@ -43,19 +43,19 @@ aws_client_webclient: aws_consul_client .built.aws_client_webclient
 	touch .built.aws_consul_server
 
 .built.aws_client_listing: client_listing.json files/install_node.sh services/listing.hcl files/listing.service
-	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_listing.json
+	AMI_OWNER=$(AMI_OWNER) CONSUL_VER=$(CONSUL_VER) packer build -only amazon-ebs client_listing.json
 	touch .built.aws_client_listing
 
 .built.aws_client_mongodb: client_mongodb.json services/mongodb.hcl files/mongod.conf
-	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_mongodb.json
+	AMI_OWNER=$(AMI_OWNER) CONSUL_VER=$(CONSUL_VER) packer build -only amazon-ebs client_mongodb.json
 	touch .built.aws_client_mongodb
 
 .built.aws_client_product: client_product.json services/product.hcl files/product.service
-	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_product.json
+	AMI_OWNER=$(AMI_OWNER) CONSUL_VER=$(CONSUL_VER) packer build -only amazon-ebs client_product.json
 	touch .built.aws_client_product
 
 .built.aws_client_webclient: client_webclient.json services/web_client.hcl files/web_client.service
-	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs client_webclient.json
+	AMI_OWNER=$(AMI_OWNER) CONSUL_VER=$(CONSUL_VER) packer build -only amazon-ebs client_webclient.json
 	touch .built.aws_client_webclient
 
 $(ENCRYPT_CONFIG):
