@@ -9,7 +9,7 @@
         "role": "consul-client-webclient",
         "ami_owner": "{{ env `AMI_OWNER` }}",
         "owner_tag": "thomas@hashicorp.com",
-        "proj_suffix_tag": "FY20Q2",
+        "proj_suffix_tag": "Q3-2019",
         "type": "{{ env `NODE_TYPE` }}"
     },
     "builders": [{
@@ -47,7 +47,8 @@
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
                 "Base_AMI": "{{ .SourceAMI }}",
                 "role": "{{ user `role` }}"
-            }
+            },
+            "ami_groups": ["all"]
         }
     ],
     "provisioners": [{

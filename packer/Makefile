@@ -1,6 +1,7 @@
 ENCRYPT_CONFIG := files/encrypt.hcl
 
 AMI_OWNER=753646501470
+CONSUL_VER="1.5.2"
 
 DEFAULT:
 	@echo Run 'make aws' to build appropriate images
@@ -30,15 +31,15 @@ aws_client_product: aws_consul_client .built.aws_client_product
 aws_client_webclient: aws_consul_client .built.aws_client_webclient
 
 .built.aws_consul_base: consul_base.json files/install_base.sh files/install_consul.sh
-	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs consul_base.json
+	AMI_OWNER=$(AMI_OWNER) CONSUL_VER=$(CONSUL_VER) packer build -only amazon-ebs consul_base.json
 	touch .built.aws_consul_base
 
 .built.aws_consul_client: consul_client.json files/auto-join-aws.hcl.tmpl files/update-consul-join-config files/client.hcl
-	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs consul_client.json
+	AMI_OWNER=$(AMI_OWNER) CONSUL_VER=$(CONSUL_VER) packer build -only amazon-ebs consul_client.json
 	touch .built.aws_consul_client
 
 .built.aws_consul_server: consul_server.json files/server.hcl
-	AMI_OWNER=$(AMI_OWNER) packer build -only amazon-ebs consul_server.json
+	AMI_OWNER=$(AMI_OWNER) CONSUL_VER=$(CONSUL_VER) packer build -only amazon-ebs consul_server.json
 	touch .built.aws_consul_server
 
 .built.aws_client_listing: client_listing.json files/install_node.sh services/listing.hcl files/listing.service
