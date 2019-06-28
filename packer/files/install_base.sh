@@ -1,11 +1,17 @@
 #! /bin/bash
 
-echo "Updating and installing required software..."
-sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq > /dev/null
-sudo DEBIAN_FRONTEND=noninteractive apt-get -qq upgrade > /dev/null
-sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq unzip wget jq python3-pip > /dev/null
+set -e
 
-sleep 15
+# Wait for cloud-init to finish
+while [ ! -f /var/lib/cloud/instance/boot-finished ]; do
+  echo 'Waiting for cloud-init to finish...'
+  sleep 1
+done
+
+echo "Updating and installing required software..."
+sudo DEBIAN_FRONTEND=noninteractive apt-get update -qq -y > /dev/null
+sudo DEBIAN_FRONTEND=noninteractive apt-get -qq upgrade -y > /dev/null
+sudo DEBIAN_FRONTEND=noninteractive apt-get install -qq unzip wget jq python3-pip > /dev/null
 
 # echo "Adding reinvent user"
 # sudo adduser --disabled-password --gecos "reInvent User" reinvent
@@ -14,5 +20,5 @@ sleep 15
 # sudo chown reinvent:reinvent /home/reinvent/.ssh/authorized_keys
 # sudo chmod 600 /home/reinvent/.ssh/authorized_keys
 
-echo "Finished!"
+echo "Package update & install finished!"
 
