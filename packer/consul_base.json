@@ -9,8 +9,8 @@
         "role": "consul-base",
         "type": "{{ env `NODE_TYPE` }}",
         "owner_tag": "thomas@hashicorp.com",
-        "proj_suffix_tag": "FY20Q2",
-        "consul_version": "1.5.1"
+        "proj_suffix_tag": "Q3-2019",
+        "consul_version": "{{ env `CONSUL_VER` }}"
     },
     "builders": [{
             "image_name": "cc-demo-consul-base",
@@ -48,7 +48,8 @@
                 "Base_AMI": "{{ .SourceAMI }}",
                 "consul_version": "{{ user `consul_version` }}",
                 "role": "{{ user `role` }}"
-            }
+            },
+            "ami_groups": ["all"]
         }
     ],
     "provisioners": [{

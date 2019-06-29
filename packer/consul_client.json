@@ -9,8 +9,9 @@
         "role": "consul-client",
         "ami_owner": "{{ env `AMI_OWNER` }}",
         "owner_tag": "thomas@hashicorp.com",
-        "proj_suffix_tag": "FY20Q2",
-        "type": "{{ env `NODE_TYPE` }}"
+        "proj_suffix_tag": "Q3-2019",
+        "type": "{{ env `NODE_TYPE` }}",
+        "consul_version": "{{ env `CONSUL_VER` }}"
     },
     "builders": [{
             "image_name": "cc-demo-consul-client",
@@ -46,8 +47,10 @@
                 "project": "CC Demo {{ user `proj_suffix_tag` }}",
                 "Base_AMI_Name": "{{ .SourceAMIName }}",
                 "Base_AMI": "{{ .SourceAMI }}",
+                "consul_version": "{{ user `consul_version` }}",
                 "role": "{{ user `role` }}"
-            }
+            },
+            "ami_groups": ["all"]
         }
     ],
     "provisioners": [{
