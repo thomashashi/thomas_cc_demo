@@ -14,8 +14,4 @@ service {
       timeout  = "1s"
     },
   ]
-
-  connect = {
-    "proxy" = {}
-  }
 }
