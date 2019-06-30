@@ -6,16 +6,7 @@ service {
   tags                = ["prod"]
 
   connect = {
-    proxy = {
-      config = {
-        upstreams = [
-          {
-            destination_name = "mongodb"
-            local_bind_port  = 5001
-          },
-        ]
-      }
-    }
+    proxy = {}
   }
 }
 
@@ -36,14 +27,5 @@ checks = [
     http            = "http://localhost:5000/product/healthz"
     tls_skip_verify = true
     service_id      = "product"
-  },
-  {
-    id              = "product-proxy-health"
-    interval        = "10s"
-    timeout         = "1s"
-    name            = "product server /healthz"
-    http            = "http://localhost:5000/product/healthz"
-    tls_skip_verify = true
-    service_id      = "product-proxy"
   },
 ]

@@ -1,10 +1,10 @@
 [Unit]
-Description=product.py - Listing service API - With Consul Connect
+Description=product.py - Listing service API
 After=network.target
 
 [Service]
-Environment=DB_ADDR=localhost
-Environment=DB_PORT=5001
+Environment=DB_ADDR=mongodb.service.consul
+Environment=DB_PORT=27017
 Environment=DB_USER=mongo
 Environment=DB_PW=mongo
 Environment=DB_NAME=bbthe90s

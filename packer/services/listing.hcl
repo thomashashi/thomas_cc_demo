@@ -6,16 +6,7 @@ service {
   tags                = ["prod"]
 
   connect = {
-    proxy = {
-      config = {
-        upstreams = [
-          {
-            destination_name = "mongodb"
-            local_bind_port  = 8001
-          },
-        ]
-      }
-    }
+    proxy = {}
   }
 
   checks = [
