@@ -106,6 +106,9 @@ This will take a couple minutes to run. Once the command prompt returns, wait a 
       `Environment=DB_PORT=27017`
     - tells `listing` service how to talk to the `mongodb` service
     - this is using service discovery
+  - Show Querying Consul DNS:
+    - `dig +short mongodb.service.consul srv`
+    - `dig +short product.service.consul srv`
   - Consul resolves queries to addresses `XYZ.service.consul`
     - ex: `ping mongodb.service.consul`
 
