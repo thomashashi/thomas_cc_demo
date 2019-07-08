@@ -8,7 +8,7 @@
         "aws_region": "{{ env `AWS_REGION` }}",
         "role": "consul-client-product",
         "ami_owner": "{{ env `AMI_OWNER` }}",
-        "owner_tag": "thomas@hashicorp.com",
+        "owner_tag": "rpeteuil@hashicorp.com",
         "proj_suffix_tag": "Q3-2019",
         "type": "{{ env `NODE_TYPE` }}",
         "consul_version": "{{ env `CONSUL_VER` }}"
@@ -49,8 +49,7 @@
                 "Base_AMI": "{{ .SourceAMI }}",
                 "consul_version": "{{ user `consul_version` }}",
                 "role": "{{ user `role` }}"
-            },
-            "ami_groups": ["all"]
+            }
         }
     ],
     "provisioners": [{

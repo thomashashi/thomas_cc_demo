@@ -32,10 +32,6 @@ service {
             local_bind_port  = 10001
             destination_type = "prepared_query"
           },
-          {
-            destination_name = "listing"
-            local_bind_port  = 10002
-          },
         ]
       }
     }

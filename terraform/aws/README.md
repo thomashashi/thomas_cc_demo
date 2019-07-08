@@ -84,52 +84,50 @@ This will take a couple minutes to run. Once the command prompt returns, wait a 
 
 ### Demo Prep
 
-- Connect to webclient server
-  - `terraform output webclient_servers`
-  - `ssh ubuntu@<first ip returned>`
-
 - Open the webclient web UI in browser
-  - `terraform output webclient-lb`
+  - `terraform output webclient_lb`
   - Open value returned in a web browser
 
 - Open the Consul web UI in browser
-  - get fqdn of Consul LB `terraform output consul-lb`
+  - get fqdn of Consul LB `terraform output consul_lb`
   - Open value returned in format `http://<consul_server_fqdn>:8500/ui`
 
-### Multi Region - Temporary Setup Step - connect consul clusters
-
-- In the Consul UI, on the Kay/Value tab, copy the value of the key `server_ips`
-- Connect to a Consul Server in each DC
-  - type the following command: `consul join -wan <paste value of server_ips here>`
-  - remember run this on one consul server in each DC
-
-### Consul Service Discovery
+### Consul Service Discovery - Listing to MongoDB
 
 - We're going to review a service using Consul for Service Discovery
-  - use ssh connection to webclient server (from step above)
-- Display the **web_client service** definition with command
-  - `cat /lib/systemd/system/web_client.service`
-- **web_client** service calls two APIs, but for now focus on `listing` which uses Service Discovery
-  - Point out line in file:
-    - `Environment=LISTING_URI=http://listing.service.consul:8000`
-    - tells `web_client` how to talk to the `listing` service
+- Connect to a Listing API server
+  - `terraform output listing_api_servers`
+  - `ssh ubuntu@<first ip returned>`
+- Display the **listing service** definition with command
+  - `cat /lib/systemd/system/listing.service`
+- The service calls references addresses for itself and mongoDB
+  - Point out lines in file:
+    - `Environment=DB_URL=mongodb.service.consul`
+      `Environment=DB_PORT=27017`
+    - tells `listing` service how to talk to the `mongodb` service
     - this is using service discovery
-  - Consul resolves service queried with addresses `http://XYZ.service.consul`
-    - ex: `ping product.service.consul`
+  - Show Querying Consul DNS:
+    - `dig +short mongodb.service.consul srv`
+    - `dig +short product.service.consul srv`
+  - Consul resolves queries to addresses `XYZ.service.consul`
+    - ex: `ping mongodb.service.consul`
 
 #### Consul Service Discovery - Network traffic
 
-- Network traffic between `web_client` and `listing` services
-  - Dump all network packet data to `listing` service:
-    - `sudo tcpdump -A 'host listing.service.consul and port 8000 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
+- Network traffic between `listing` and `mongodb` services
+  - Dump all network packet data to `mongodb`:
+    - `sudo tcpdump -A 'host mongodb.service.consul and port 27017 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
   - Switch to browser and reload the page a few times
   - Return to terminal - point out **packet data traversing the network in plaintext**
   - Hit _Cntl-C_ to exit `tcpdump`
-- **Summary:** `web_client` is finding `listing` services dynamically, but nothing is protecting their traffic
+- **Summary:** `listing` is finding `mongodb` dynamically, but nothing is protecting the traffic
 
 ### Consul Connect
 
 - Next review service using Consul Connect
+- Connect to webclient server
+  - `terraform output webclient_servers`
+  - `ssh ubuntu@<first ip returned>`
 - Display the **web_client service** definition again
   - `cat /lib/systemd/system/web_client.service`
 - **web_client** also calls **product** API, but using with Consul Connect
