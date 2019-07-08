@@ -8,4 +8,6 @@ pip3 install pymongo
 # download the apply
 mkdir /home/ubuntu/src
 cd /home/ubuntu/src
-git clone https://github.com/thomashashi/simple-client.git
+git clone https://github.com/robertpeteuil/simple-client.git
+cd ..
+sudo chown -R ubuntu:ubuntu /home/ubuntu/src

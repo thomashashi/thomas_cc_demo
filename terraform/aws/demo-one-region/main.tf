@@ -37,18 +37,12 @@ resource "consul_prepared_query" "product_service" {
   }
 }
 
-resource "consul_keys" "server_ips_main" {
-  provider = "consul.main"
-
+resource "consul_keys" "keys" {
   key {
-    path   = "product/enable_hyper_speed"
+    path   = "product/run"
     value  = "true"
     delete = true
   }
-}
-
-resource "consul_keys" "server_ips_alt" {
-  provider = "consul.alt"
 
   key {
     path   = "product/enable_hyper_speed"
