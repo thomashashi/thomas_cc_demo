@@ -9,6 +9,6 @@ pip3 install python-consul
 # download the apply
 mkdir /home/ubuntu/src
 cd /home/ubuntu/src
-git clone https://github.com/robertpeteuil/product-service.git
+git clone https://github.com/thomashashi/product-service.git
 cd ..
 sudo chown -R ubuntu:ubuntu /home/ubuntu/src
