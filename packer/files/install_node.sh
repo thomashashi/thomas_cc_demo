@@ -15,7 +15,7 @@ sleep 15
 # install the listing service app
 mkdir /home/ubuntu/src
 cd /home/ubuntu/src
-git clone https://github.com/robertpeteuil/listing-service.git
+git clone https://github.com/thomashashi/listing-service.git
 cd listing-service
 npm install
 cd ..
