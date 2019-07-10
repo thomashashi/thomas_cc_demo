@@ -2,7 +2,7 @@
 
 ## Overview
 
-This terraform code will spin up a simple three-tier web application that illustrates the differences in tiers using Consul for service discovery only (web_client to listings), and other tiers that use Service Discovery and Consul Connect (web_client to products).
+This terraform code will spin up a simple three-tier web application that illustrates the differences in tiers using Consul for service discovery only (listing to mongodb, and product to mongodb), and other tiers that use Service Discovery and Consul Connect (web_client to products, and web_client to listing).
 
 > Previous versions of this demo used seperate demo environments to demonstrate Service Discovery ("noconnect" mode) and Consul Connect ("connect" mode).  These two environments have been combined into one environment that incorporates one connection via Service Discovery and the others via Consul Connect.  These instructions are specific to this new environment.
 
@@ -12,7 +12,16 @@ For reference, the three tiers are:
  2. Two internal apis.  Both access data a common MongoDB database
   2a. `listing` service written in Node
   2b. `product` service written in Python
- 3. A MongoDB instance
+ 3. A `MongoDB` service running on an instance
+
+## Demo variants
+
+- Single Region - located in `terraform/aws/single-region-demo`
+  - demonstrates: service discovery, consul connect and intentions
+
+- Multi Region - located in `terraform/aws/multi-region-demo`
+  - demonstrates: service failover between datacenters using prepared query
+  - includes everything in single-region-demo
 
 ### Architecture Diagrams
 
@@ -25,6 +34,17 @@ Diagrams of previous connect/non-connect environments:
 ### Images
 
 The code which built all of the images is in the `packer` directory located at the top level of this repo. While you shouldn't have to build the images which are used in this demo, the Packer code is there to enable you to do so, and also to allow you to see how the application configuration changes as you move your infrastructure to Consul Connect.
+
+The images can be built by following these steps:
+
+- `cd packer`
+- export the AWS_REGION you want to build the images in with command
+  - `export AWS_REGION="us-west-2"`
+- view & edit the packer templates (`.json` files in packer directory)
+  - adjust variables defined at the beginning of each template
+- use make to build all the aws images with command
+  - `make aws`
+- All images will be built and pushed to your AWS environment
 
 ## Requirements
 
@@ -54,9 +74,20 @@ You will need:
 
  1. `git clone https://github.com/thomashashi/thomas_cc_demo.git cc-connect`
 
-## Deployment
+## Deploy Demo Environment using Terraform
+
+Determine which version of the demo you want to use:
+
+- *single-region-demo*
+  - demonstrates: service discovery, consul connect and intentions
+
+- *multi-region-demo*
+  - demonstrates: service failover between datacenters using prepared query
+  - includes everything in single-region-demo
 
  1. `cd cc-connect/terraform/aws/`
+    1. for the single-region demo, type `cd single-region-demo`
+    2. for the multi-region demo, type `cd multi-region-demo`
  2. `cp terraform.auto.tfvars.example terraform.auto.tfvars`
  3. Edit the `terraform.auto.tfvars` file:
     1. Change the `project_name` to something which is: all lowercase letters/numbers/dashes and unique to you
@@ -65,20 +96,32 @@ You will need:
     3. Set `ssh_key_name` to the name of the key identified in "Requirement 4"
     4. Set `top_level_domain` to a TLD in the Route53 Zone set below
     5. Set `route53_zone_id` to the AWS Route53 Zone ID you want to use
-    6. Set `consul_dc` to `dc1` if this is the first cluster
+    6. Set `consul_dc` to `dc1` as this is the first datacenter
        - if setting up a 2nd cluster in another region, set to `dc2`
-    7. Set `consul_acl_dc` to `dc1` if this is the 1st or alternate cluster
-    8. Set `mode` to `connect`
-    9. Set `consul_lic` to your Consul Enterprise License string
+    7. Set `consul_lic` to your Consul Enterprise License string
+    8. Set `aws_region` to the region to deploy the primary datacenter
+ 4. *multi-region-demo* requires setting these additional variables
+    1. Set `aws_region_alt` to the region to deploy the alternate datacenter
+    2. Set `consul_dc_alt` to `dc2` since this is the alternate datacenter
+    3. Set `ssh_pri_key_file` path to private SSH key that can login to the instances
+       - used in post provisioning to join the Consul datacenters together
+ 5. Save your changes to the `terraform.auto.tfvars` file
+ 6. Run `terraform init`
+ 7. When you see "Terraform has been successfully initialized!" ...
+ 8. Run `terraform plan`
+ 9. Verify the plan output is as expected
+ 10. Run `terraform apply` and answer `yes` when prompted
 
- 4. Save your changes to the `terraform.auto.tfvars` file
- 5. Run `terraform init`
- 6. When you see "Terraform has been successfully initialized!" ...
- 7. Run `terraform plan`
- 8. Verify the plan output is as expected
- 9. Run `terraform apply` and answer `yes` when prompted
+## Depoyment Time
 
-This will take a couple minutes to run. Once the command prompt returns, wait a couple minutes and the demo will be ready.
+- The Terraform script will take a few minutes to run
+- The *single-region-demo*
+  - Is fully functional within a minute of the terraform script completeion
+- The *multi-region-demo*
+  - **Make sure you deploy your demo environment in advance of your demo**
+  - The alt datacenter (dc2) requires ~25 mins for the ACLs to fully replicate
+  - The primary datacenter (dc1) is fully functional after terraform completeion
+    - you can begin your demo before `dc2` is functional if you demo features on `dc1` for the first 20-25 mins
 
 ## Demo Script
 
@@ -117,8 +160,9 @@ This will take a couple minutes to run. Once the command prompt returns, wait a 
 - Network traffic between `listing` and `mongodb` services
   - Dump all network packet data to `mongodb`:
     - `sudo tcpdump -A 'host mongodb.service.consul and port 27017 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)'`
-  - Switch to browser and reload the page a few times
-  - Return to terminal - point out **packet data traversing the network in plaintext**
+  - Traffic will stream immediately as the connection to mongodb is persistent
+  - Watch the traffic and press `ctrl-c` after you see the database records displayed
+  - Point out that the data including database credentials **is traversing network in plaintext**
   - Hit _Cntl-C_ to exit `tcpdump`
 - **Summary:** `listing` is finding `mongodb` dynamically, but nothing is protecting the traffic
 
