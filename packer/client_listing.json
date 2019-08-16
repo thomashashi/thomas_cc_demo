@@ -68,6 +68,11 @@
             "destination": "/tmp/listing.service"
         },
         {
+            "type": "file",
+            "source": "demoscripts/listing/",
+            "destination": "/home/ubuntu"
+        },
+        {
             "type": "shell",
             "inline": [
                 "sudo chmod a+x /tmp/install_node.sh",

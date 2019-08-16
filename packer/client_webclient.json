@@ -73,6 +73,11 @@
             "destination": "/tmp/web_client_proxy.service"
         },
         {
+            "type": "file",
+            "source": "demoscripts/webclient/",
+            "destination": "/home/ubuntu"
+        },
+        {
             "type": "shell",
             "inline": [
                 "sudo chmod a+x /tmp/install_webclient.sh",
