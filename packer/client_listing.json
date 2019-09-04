@@ -69,6 +69,11 @@
         },
         {
             "type": "file",
+            "source": "files/listing_proxy.service",
+            "destination": "/tmp/listing_proxy.service"
+        },
+        {
+            "type": "file",
             "source": "demoscripts/listing/",
             "destination": "/home/ubuntu"
         },
@@ -80,10 +85,12 @@
                 "sudo rm -f /tmp/install_node.sh",
                 "sudo mv /tmp/listing.hcl /etc/consul/listing.hcl",
                 "sudo mv /tmp/listing.service /lib/systemd/system/listing.service",
+                "sudo mv /tmp/listing_proxy.service /lib/systemd/system/listing_proxy.service",
                 "sudo chown -R consul:consul /etc/consul",
                 "sudo systemctl daemon-reload",
                 "sudo systemctl enable consul",
                 "sudo systemctl enable listing.service",
+                "sudo systemctl enable listing_proxy.service",
                 "sudo rm -rf /opt/consul/*"
             ]
         }
