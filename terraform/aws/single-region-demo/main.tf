@@ -43,10 +43,4 @@ resource "consul_keys" "keys" {
     value  = "true"
     delete = true
   }
-
-  key {
-    path   = "product/enable_hyper_speed"
-    value  = "true"
-    delete = true
-  }
 }
