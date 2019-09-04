@@ -41,11 +41,6 @@ variable "ssh_pri_key_file" {
   default     = ""
 }
 
-# Do we need this in multi-region TF file?  Isnt it always the DC of main?
-# variable "consul_acl_dc" {
-#   description = "Consul ACL cluster name"
-# }
-
 variable "route53_zone_id" {
   description = "Route 53 zone into which to place hostnames"
 }
