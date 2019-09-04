@@ -68,6 +68,11 @@
             "destination": "/tmp/product.service"
         },
         {
+            "type": "file",
+            "source": "files/product_proxy.service",
+            "destination": "/tmp/product_proxy.service"
+        },
+        {
             "type": "shell",
             "inline": [
                 "sudo chmod a+x /tmp/install_products.sh",
@@ -75,9 +80,11 @@
                 "sudo rm -f /tmp/install_products.sh",
                 "sudo mv /tmp/product.hcl /etc/consul/product.hcl",
                 "sudo mv /tmp/product.service /lib/systemd/system/product.service",
+                "sudo mv /tmp/product_proxy.service /lib/systemd/system/product_proxy.service",
                 "sudo chown -R consul:consul /etc/consul",
                 "sudo systemctl daemon-reload",
                 "sudo systemctl enable product.service",
+                "sudo systemctl enable product_proxy.service",
                 "sudo systemctl enable consul",
                 "sudo rm -rf /opt/consul/*"
             ]

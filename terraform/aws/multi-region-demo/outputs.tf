@@ -34,34 +34,50 @@ output "main_product_api_servers" {
 }
 
 # Alternate Cluster Outputs
-output "alt_region" {
+output "secondary_region" {
   value = "${module.cluster_alt.aws_region}"
 }
 
-output "alt_consul_lb" {
+output "secondary_consul_lb" {
   value = "${module.cluster_alt.consul_lb}"
 }
 
-output "alt_consul_servers" {
+output "secondary_consul_servers" {
   value = ["${module.cluster_alt.consul_servers}"]
 }
 
-output "alt_webclient_lb" {
+output "secondary_webclient_lb" {
   value = "${module.cluster_alt.webclient_lb}"
 }
 
-output "alt_webclient_servers" {
+output "secondary_webclient_servers" {
   value = ["${module.cluster_alt.webclient_servers}"]
 }
 
-output "alt_listing_api_servers" {
+output "secondary_listing_api_servers" {
   value = ["${module.cluster_alt.listing_api_servers}"]
 }
 
-output "alt_mongo_servers" {
+output "secondary_mongo_servers" {
   value = ["${module.cluster_alt.mongo_servers}"]
 }
 
-output "alt_product_api_servers" {
+output "secondary_product_api_servers" {
   value = ["${module.cluster_alt.product_api_servers}"]
+}
+
+# Display Demo Connection Information at end
+output "working_connections" {
+  value = <<EOF
+
+
+  OPEN IN BROWSER TABS
+    Webclient   http://${module.cluster_main.webclient_lb}
+    Consul GUI  http://${module.cluster_main.consul_lb}
+
+  CONNECT IN TERMINAL TABS:
+    ssh ubuntu@${element(module.cluster_main.listing_api_servers, 0)}
+    ssh ubuntu@${element(module.cluster_main.webclient_servers, 0)}
+
+EOF
 }

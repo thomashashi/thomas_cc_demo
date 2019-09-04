@@ -1,0 +1,14 @@
+[Unit]
+Description=Listing Consul Connect Proxies
+After=network.target
+StartLimitInterval=0
+
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/usr/local/bin/consul connect proxy -sidecar-for listing
+Restart=always
+RestartDelay=5
+
+[Install]
+WantedBy=multi-user.target

@@ -6,7 +6,7 @@ service {
   tags                = ["prod"]
 
   connect = {
-    proxy = {}
+    sidecar_service = {}
   }
 
   checks = [

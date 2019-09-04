@@ -112,12 +112,6 @@ resource "consul_keys" "server_ips_main" {
   }
 
   key {
-    path   = "product/enable_hyper_speed"
-    value  = "true"
-    delete = true
-  }
-
-  key {
     path   = "product/run"
     value  = "true"
     delete = true
@@ -131,12 +125,6 @@ resource "consul_keys" "server_ips_alt" {
   key {
     path  = "server_ips"
     value = "${join(" ", concat(module.cluster_main.consul_servers_private_ip, module.cluster_alt.consul_servers_private_ip))}"
-  }
-
-  key {
-    path   = "product/enable_hyper_speed"
-    value  = "true"
-    delete = true
   }
 
   key {
